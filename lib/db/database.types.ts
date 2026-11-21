@@ -23,7 +23,39 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "books": {
+            "book_places": {
+                  Row: {
+                    "book_id": string,"created_at": string | null,"created_by": string | null,"id": string,"place_id": string,"source": Database["public"]['Enums']["location_source"],"status": Database["public"]['Enums']["link_status"]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "book_id": string,"created_at"?: string | null,"created_by"?: string | null,"id"?: string,"place_id": string,"source": Database["public"]['Enums']["location_source"],"status"?: Database["public"]['Enums']["link_status"]
+                  }
+                  Update: {
+                    "book_id"?: string,"created_at"?: string | null,"created_by"?: string | null,"id"?: string,"place_id"?: string,"source"?: Database["public"]['Enums']["location_source"],"status"?: Database["public"]['Enums']["link_status"]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "book_places_book_id_fkey"
+      columns: ["book_id"]
+isOneToOne: false
+      referencedRelation: "books"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "book_places_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "book_places_place_id_fkey"
+      columns: ["place_id"]
+isOneToOne: false
+      referencedRelation: "places"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"books": {
                   Row: {
                     "authors": (string)[],"cover_id": number | null,"created_at": string | null,"description": string | null,"first_publish_year": number | null,"id": string,"ol_work_id": string | null,"setting_checked_at": string | null,"title": string,"wikidata_id": string | null
                   }
@@ -33,6 +65,20 @@ export type Database = {
                   }
                   Update: {
                     "authors"?: (string)[],"cover_id"?: number | null,"created_at"?: string | null,"description"?: string | null,"first_publish_year"?: number | null,"id"?: string,"ol_work_id"?: string | null,"setting_checked_at"?: string | null,"title"?: string,"wikidata_id"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"places": {
+                  Row: {
+                    "country_code": string | null,"created_at": string | null,"geom": unknown,"id": string,"name": string,"osm_id": string | null,"precision": Database["public"]['Enums']["location_precision"],"wikidata_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "country_code"?: string | null,"created_at"?: string | null,"geom"?: unknown,"id"?: string,"name": string,"osm_id"?: string | null,"precision": Database["public"]['Enums']["location_precision"],"wikidata_id"?: string | null
+                  }
+                  Update: {
+                    "country_code"?: string | null,"created_at"?: string | null,"geom"?: unknown,"id"?: string,"name"?: string,"osm_id"?: string | null,"precision"?: Database["public"]['Enums']["location_precision"],"wikidata_id"?: string | null
                   }
                   Relationships: [
                     
@@ -83,10 +129,14 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            [_ in never]: never
+            "book_place_coords":
+{ Args: { "p_book_ids": (string)[] }; Returns: {
+              "book_id": string,"country_code": string,"lat": number,"lng": number,"name": string,"place_id": string,"precision": Database["public"]['Enums']["location_precision"],"source": Database["public"]['Enums']["location_source"]
+            }[]
+                           }
           }
           Enums: {
-            "shelf_status": "read"|"reading"|"want"
+            "link_status": "approved"|"pending"|"rejected","location_precision": "point"|"city"|"region"|"country"|"fictional","location_source": "wikidata"|"user"|"admin","shelf_status": "read"|"reading"|"want"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -206,7 +256,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "shelf_status": ["read", "reading", "want"]
+            "link_status": ["approved", "pending", "rejected"],"location_precision": ["point", "city", "region", "country", "fictional"],"location_source": ["wikidata", "user", "admin"],"shelf_status": ["read", "reading", "want"]
           }
         }
 } as const

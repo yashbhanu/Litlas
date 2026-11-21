@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { loadEnv } from "vite";
 import { defineConfig } from "vitest/config";
 
@@ -13,5 +14,9 @@ export default defineConfig({
     hookTimeout: 30_000,
     // Tests share one database; run files one at a time.
     fileParallelism: false,
+    // Server modules (e.g. lib/db/settings.ts) import `server-only`; stub it as unit tests do.
+    alias: {
+      "server-only": fileURLToPath(new URL("./tests/unit/stubs/server-only.ts", import.meta.url)),
+    },
   },
 });

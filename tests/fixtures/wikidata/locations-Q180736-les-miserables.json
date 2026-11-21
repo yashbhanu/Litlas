@@ -1,0 +1,219 @@
+{
+  "head": {
+    "vars": [
+      "place",
+      "placeLabel",
+      "coord",
+      "countryCode",
+      "ownCode",
+      "isCountry",
+      "isFictional",
+      "isSettlement",
+      "isRegion"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "place": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q90"
+        },
+        "countryCode": {
+          "type": "literal",
+          "value": "FR"
+        },
+        "coord": {
+          "datatype": "http://www.opengis.net/ont/geosparql#wktLiteral",
+          "type": "literal",
+          "value": "Point(2.352222222 48.856666666)"
+        },
+        "placeLabel": {
+          "xml:lang": "en",
+          "type": "literal",
+          "value": "Paris"
+        },
+        "isCountry": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isFictional": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isSettlement": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "true"
+        },
+        "isRegion": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        }
+      },
+      {
+        "place": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q181306"
+        },
+        "countryCode": {
+          "type": "literal",
+          "value": "FR"
+        },
+        "coord": {
+          "datatype": "http://www.opengis.net/ont/geosparql#wktLiteral",
+          "type": "literal",
+          "value": "Point(6.235555555 44.0925)"
+        },
+        "placeLabel": {
+          "xml:lang": "en",
+          "type": "literal",
+          "value": "Digne-les-Bains"
+        },
+        "isCountry": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isFictional": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isSettlement": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isRegion": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        }
+      },
+      {
+        "place": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q213344"
+        },
+        "countryCode": {
+          "type": "literal",
+          "value": "FR"
+        },
+        "coord": {
+          "datatype": "http://www.opengis.net/ont/geosparql#wktLiteral",
+          "type": "literal",
+          "value": "Point(1.763333333 50.463611111)"
+        },
+        "placeLabel": {
+          "xml:lang": "en",
+          "type": "literal",
+          "value": "Montreuil-sur-Mer"
+        },
+        "isCountry": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isFictional": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isSettlement": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isRegion": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        }
+      },
+      {
+        "place": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q237367"
+        },
+        "countryCode": {
+          "type": "literal",
+          "value": "FR"
+        },
+        "coord": {
+          "datatype": "http://www.opengis.net/ont/geosparql#wktLiteral",
+          "type": "literal",
+          "value": "Point(2.564722222 48.898333333)"
+        },
+        "placeLabel": {
+          "xml:lang": "en",
+          "type": "literal",
+          "value": "Montfermeil"
+        },
+        "isCountry": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isFictional": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isSettlement": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isRegion": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        }
+      },
+      {
+        "place": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q1326237"
+        },
+        "countryCode": {
+          "type": "literal",
+          "value": "FR"
+        },
+        "coord": {
+          "datatype": "http://www.opengis.net/ont/geosparql#wktLiteral",
+          "type": "literal",
+          "value": "Point(2.36916667 48.85305556)"
+        },
+        "placeLabel": {
+          "xml:lang": "en",
+          "type": "literal",
+          "value": "Elephant of the Bastille"
+        },
+        "isCountry": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isFictional": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isSettlement": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isRegion": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        }
+      }
+    ]
+  }
+}

@@ -1,11 +1,14 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
+import { MapPinIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api-client";
-import type { ShelfEntry } from "@/lib/books/types";
+import type { ShelfEntryWithPlaces } from "@/lib/books/types";
+import { settingSummary } from "@/lib/books/setting-summary";
+import type { BookPlace } from "@/lib/geo/map";
 import {
   SHELF_STATUSES,
   SHELF_STATUS_LABELS,
@@ -21,7 +24,7 @@ const FILTERS: { value: Filter; label: string }[] = [
   ...SHELF_STATUSES.map((value) => ({ value, label: SHELF_STATUS_LABELS[value] })),
 ];
 
-export function ShelfList({ entries }: { entries: ShelfEntry[] }) {
+export function ShelfList({ entries }: { entries: ShelfEntryWithPlaces[] }) {
   const [filter, setFilter] = useState<Filter>("all");
 
   const counts = { all: entries.length, read: 0, reading: 0, want: 0 };
@@ -30,10 +33,7 @@ export function ShelfList({ entries }: { entries: ShelfEntry[] }) {
   const visible = filter === "all" ? entries : entries.filter((e) => e.status === filter);
 
   return (
-    <section aria-labelledby="shelf-heading" className="space-y-4">
-      <h2 id="shelf-heading" className="sr-only">
-        Your shelf
-      </h2>
+    <div className="space-y-4">
       <div role="group" aria-label="Filter by status" className="flex flex-wrap gap-2">
         {FILTERS.map(({ value, label }) => (
           <Button
@@ -61,11 +61,11 @@ export function ShelfList({ entries }: { entries: ShelfEntry[] }) {
           ))}
         </ul>
       )}
-    </section>
+    </div>
   );
 }
 
-function ShelfItem({ entry }: { entry: ShelfEntry }) {
+function ShelfItem({ entry }: { entry: ShelfEntryWithPlaces }) {
   const router = useRouter();
   const { book } = entry;
 
@@ -99,6 +99,7 @@ function ShelfItem({ entry }: { entry: ShelfEntry }) {
               <span className="text-muted-foreground">{"☆".repeat(5 - entry.rating)}</span>
             </p>
           ) : null}
+          <SettingSummary places={entry.places} />
           {entry.finishedOn ? (
             <p className="text-xs text-muted-foreground">Finished {entry.finishedOn}</p>
           ) : null}
@@ -146,5 +147,17 @@ function ShelfItem({ entry }: { entry: ShelfEntry }) {
         </div>
       </div>
     </li>
+  );
+}
+
+function SettingSummary({ places }: { places: BookPlace[] }) {
+  return (
+    <p className="flex items-start gap-1 text-xs text-muted-foreground">
+      <MapPinIcon aria-hidden className="mt-px size-3 shrink-0" />
+      <span>
+        <span className="sr-only">Setting: </span>
+        {settingSummary(places)}
+      </span>
+    </p>
   );
 }

@@ -6,6 +6,18 @@ export function SiteFooter() {
         <a className="underline underline-offset-4" href="https://openlibrary.org">
           Open Library
         </a>
+        . Book settings from{" "}
+        <a className="underline underline-offset-4" href="https://www.wikidata.org">
+          Wikidata
+        </a>{" "}
+        (CC0). Map data ©{" "}
+        <a className="underline underline-offset-4" href="https://www.openstreetmap.org/copyright">
+          OpenStreetMap
+        </a>{" "}
+        contributors, tiles by{" "}
+        <a className="underline underline-offset-4" href="https://openfreemap.org">
+          OpenFreeMap
+        </a>
         .
       </div>
     </footer>

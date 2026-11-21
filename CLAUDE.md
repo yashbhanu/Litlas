@@ -46,7 +46,10 @@ pnpm db:start       # Start local Supabase (applies migrations)
 pnpm db:stop        # Stop it. Restart after editing supabase/config.toml (auth config is read at start)
 pnpm db:reset       # Re-apply all migrations + supabase/seed.sql
 pnpm db:types       # Regenerate lib/db/database.types.ts from local DB
+pnpm countries:build   # Rebuild public/geo/countries.geojson + lib/geo/country-bounds.json (Natural Earth)
 ```
+
+`postinstall` copies MapLibre's web worker to `public/maplibre/maplibre-gl-worker-<version>.mjs` (gitignored). maplibre-gl 6 loads its worker from a file next to its module, which bundlers don't emit; `components/map/map-canvas.tsx` points `setWorkerUrl()` at the copy. If the map logs "Worker failed to load", run `pnpm install`.
 
 CI (`.github/workflows/ci.yml`):
 
@@ -72,10 +75,14 @@ components/           UI components (map/, books/, ui/ ← shadcn)
 proxy.ts              session refresh + signed-out redirects (Next 16's name for middleware)
 lib/
   external/           http.ts (fetchJson: UA, retry, Zod), openlibrary.ts (pure, testable client),
-                      openlibrary.server.ts (default instance + `use cache` search)
+                      openlibrary.server.ts (default instance + `use cache` search),
+                      wikidata.ts (SPARQL client: serialized queue, parsing, classification),
+                      wikidata.server.ts (process-wide instance), wikidata-constants.ts (verified P/Q ids)
   db/                 server.ts (user client, RLS), admin.ts (service role), browser.ts, proxy.ts,
-                      books.ts / shelf.ts (typed queries), database.types.ts (generated)
-  geo/                precision rules, continent lookup, GeoJSON builders
+                      books.ts / shelf.ts / places.ts / map.ts (typed queries),
+                      settings.ts (Wikidata setting lookup + cache writes), database.types.ts (generated)
+  geo/                precision.ts (rules + classifyPlace), continents.ts (ISO → continent, names),
+                      map.ts (pins GeoJSON, stats, list view, mapBounds), country-bounds.json (generated)
   validation/         zod schemas (env, books, shelf, profile, auth)
   books/              client-safe helpers/types (cover URLs, ShelfEntry)
   auth.ts             getSessionUser() / getProfile() (server-only, per-request cached)
@@ -88,7 +95,8 @@ tests/unit/           Vitest (*.test.ts[x]); fixtures-backed, server-only is stu
 tests/integration/    Vitest against local Supabase (RLS)
 tests/e2e/            Playwright (*.spec.ts)
 tests/fixtures/       recorded external API responses
-public/geo/           countries.geojson
+public/geo/           countries.geojson (Natural Earth 1:110m + 1:50m small countries, ~200 KB)
+public/maplibre/      MapLibre worker copy (generated on install, gitignored)
 data/seed/            raw Wikidata dumps from the seed script (Phase 3)
 ```
 
@@ -115,11 +123,14 @@ data/seed/            raw Wikidata dumps from the seed script (Phase 3)
 
 - Precision enum: `point | city | region | country | fictional`.
   - point/city → pin
-  - region/country → shaded area
+  - region/country → shaded area. We only ship country shapes, so a region shades its whole country.
   - fictional → not on the map, listed under "Fictional settings"
 - A book with several settings gets several pins, linked on hover.
 - Crowdsourced locations: a pending `book_places` row is approved at `APPROVAL_THRESHOLD = 3` votes, or by an admin. This is a Postgres function called after each vote.
 - Stats on every map: books read, distinct countries, distinct continents (static country→continent lookup), top 5 countries.
+- Personal/public maps and stats cover shelf entries with status `read`. The shelf list shows every status, each with its setting summary.
+- Setting lookup runs inside `POST /api/shelf` (`ensureBookSettings`). A Wikidata failure doesn't block adding the book; `setting_checked_at` stays null so it retries. Places come back through the `book_place_coords(uuid[])` SQL function (security invoker, approved links only, plain lng/lat).
+- A book with no approved places triggers "Where is this book set?" after adding. Phase 4 adds the PlacePicker there.
 - Rate limits for write routes use a Postgres counter table (e.g. 30 suggestions/day).
 - Wikidata class IDs (fictional location, country, city, literary work) must be verified before hard-coding. Keep them in one constants file.
 

@@ -1,0 +1,90 @@
+{
+  "head": {
+    "vars": [
+      "place",
+      "placeLabel",
+      "coord",
+      "countryCode",
+      "ownCode",
+      "isCountry",
+      "isFictional",
+      "isSettlement",
+      "isRegion"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "place": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q84"
+        },
+        "countryCode": {
+          "type": "literal",
+          "value": "GB"
+        },
+        "coord": {
+          "datatype": "http://www.opengis.net/ont/geosparql#wktLiteral",
+          "type": "literal",
+          "value": "Point(-0.1275 51.507222222)"
+        },
+        "placeLabel": {
+          "xml:lang": "en",
+          "type": "literal",
+          "value": "London"
+        },
+        "isCountry": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isFictional": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isSettlement": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "true"
+        },
+        "isRegion": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        }
+      },
+      {
+        "place": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q1291432"
+        },
+        "placeLabel": {
+          "xml:lang": "en",
+          "type": "literal",
+          "value": "Oceania"
+        },
+        "isCountry": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isFictional": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "true"
+        },
+        "isSettlement": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isRegion": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        }
+      }
+    ]
+  }
+}

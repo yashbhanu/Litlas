@@ -28,6 +28,6 @@ export async function proxy(request: NextRequest) {
 export const config = {
   // Skip static assets and images; API routes are included so their sessions refresh too.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|geo/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|geo/|maplibre/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };

@@ -3,7 +3,8 @@ import "server-only";
 import type { OpenLibraryClient } from "@/lib/external/openlibrary";
 import { createSupabaseAdminClient } from "./admin";
 
-export const BOOK_COLUMNS = "id, ol_work_id, title, authors, first_publish_year, cover_id" as const;
+export const BOOK_COLUMNS =
+  "id, ol_work_id, wikidata_id, title, authors, first_publish_year, cover_id, setting_checked_at" as const;
 
 type AdminClient = ReturnType<typeof createSupabaseAdminClient>;
 

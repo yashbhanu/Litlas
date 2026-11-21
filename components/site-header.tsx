@@ -34,7 +34,7 @@ async function UserNav() {
     <nav aria-label="Account" className="flex items-center gap-2">
       {profile ? (
         <Link href="/me" className={buttonVariants({ variant: "ghost", size: "sm" })}>
-          My shelf
+          My map
         </Link>
       ) : (
         <Link href="/onboarding" className={buttonVariants({ variant: "ghost", size: "sm" })}>

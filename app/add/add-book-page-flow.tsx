@@ -5,12 +5,5 @@ import { AddBookFlow } from "@/components/books/add-book-flow";
 
 export function AddBookPageFlow() {
   const router = useRouter();
-  return (
-    <AddBookFlow
-      onAdded={() => {
-        router.push("/me");
-        router.refresh();
-      }}
-    />
-  );
+  return <AddBookFlow onAdded={() => router.refresh()} onDone={() => router.push("/me")} />;
 }

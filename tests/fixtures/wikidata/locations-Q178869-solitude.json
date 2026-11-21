@@ -1,0 +1,50 @@
+{
+  "head": {
+    "vars": [
+      "place",
+      "placeLabel",
+      "coord",
+      "countryCode",
+      "ownCode",
+      "isCountry",
+      "isFictional",
+      "isSettlement",
+      "isRegion"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "place": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q934381"
+        },
+        "placeLabel": {
+          "xml:lang": "en",
+          "type": "literal",
+          "value": "Macondo"
+        },
+        "isCountry": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isFictional": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "true"
+        },
+        "isSettlement": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        },
+        "isRegion": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+          "type": "literal",
+          "value": "false"
+        }
+      }
+    ]
+  }
+}

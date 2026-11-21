@@ -48,3 +48,10 @@ export function suggestUsername(email: string | null | undefined): string {
   if (cleaned.length < 3 || RESERVED_USERNAMES.has(cleaned)) return "";
   return cleaned;
 }
+
+/** A username in a URL (/u/[username]): same shape, case-insensitive, no reserved check. */
+export const usernameParamSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .regex(/^[a-z0-9_]{3,20}$/, "Not a valid username");

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiFetch } from "@/lib/api-client";
+import type { UpsertShelfResponse } from "@/lib/books/types";
 import type { BookSearchResult } from "@/lib/validation/books";
 import {
   SHELF_STATUSES,
@@ -22,7 +23,7 @@ export function AddBookForm({
 }: {
   book: BookSearchResult;
   onBack: () => void;
-  onAdded: () => void;
+  onAdded: (result: UpsertShelfResponse) => void;
 }) {
   const [status, setStatus] = useState<ShelfStatus>("read");
   const [rating, setRating] = useState<string>("");
@@ -30,7 +31,10 @@ export function AddBookForm({
 
   const mutation = useMutation({
     mutationFn: (input: UpsertShelfEntryInput) =>
-      apiFetch("/api/shelf", { method: "POST", body: JSON.stringify(input) }),
+      apiFetch<UpsertShelfResponse>("/api/shelf", {
+        method: "POST",
+        body: JSON.stringify(input),
+      }),
     onSuccess: onAdded,
   });
 

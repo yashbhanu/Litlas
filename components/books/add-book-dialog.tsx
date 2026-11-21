@@ -32,12 +32,7 @@ export function AddBookDialog() {
           </DialogDescription>
         </DialogHeader>
         {open ? (
-          <AddBookFlow
-            onAdded={() => {
-              setOpen(false);
-              router.refresh();
-            }}
-          />
+          <AddBookFlow onAdded={() => router.refresh()} onDone={() => setOpen(false)} />
         ) : null}
       </DialogContent>
     </Dialog>

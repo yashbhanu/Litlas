@@ -9,3 +9,4 @@ test-results
 coverage
 lib/db/database.types.ts
 SPEC.md
+public/maplibre

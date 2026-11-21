@@ -1,0 +1,15 @@
+{
+  "head": {
+    "vars": ["book"]
+  },
+  "results": {
+    "bindings": [
+      {
+        "book": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q178869"
+        }
+      }
+    ]
+  }
+}

@@ -1,10 +1,15 @@
 import { apiError, isPostgrestError, parseJsonBody, PG } from "@/lib/api";
 import { getProfile, getSessionUser } from "@/lib/auth";
+import type { UpsertShelfResponse } from "@/lib/books/types";
+import { createSupabaseAdminClient } from "@/lib/db/admin";
 import { findOrCreateBook } from "@/lib/db/books";
+import { listBookPlaces } from "@/lib/db/places";
 import { createSupabaseServerClient } from "@/lib/db/server";
+import { ensureBookSettings } from "@/lib/db/settings";
 import { upsertShelfEntry } from "@/lib/db/shelf";
 import { ExternalApiError } from "@/lib/external/http";
 import { getOpenLibrary } from "@/lib/external/openlibrary.server";
+import { getWikidata } from "@/lib/external/wikidata.server";
 import { upsertShelfEntrySchema } from "@/lib/validation/shelf";
 
 /** POST /api/shelf — add a book to the signed-in user's shelf, or update its entry. */
@@ -34,22 +39,37 @@ export async function POST(request: Request) {
   }
   if (!book) return apiError("not_found", "That book wasn't found on Open Library.");
 
-  // Phase 2: look up the book's setting on Wikidata here when setting_checked_at is stale.
-
   const supabase = await createSupabaseServerClient();
+  let entry;
   try {
-    const entry = await upsertShelfEntry(supabase, {
+    entry = await upsertShelfEntry(supabase, {
       userId: user.id,
       bookId: book.id,
       status: input.status,
       rating: input.rating,
       finishedOn: input.finishedOn,
     });
-    return Response.json({ entry });
   } catch (error) {
     if (isPostgrestError(error) && error.code === PG.foreignKeyViolation) {
       return apiError("profile_required", "Pick a username before adding books.");
     }
     throw error;
   }
+
+  // Look up the book's setting on Wikidata if it's new or the last check is 90+ days old.
+  // A Wikidata outage doesn't block adding the book; the lookup is retried next time.
+  let settingLookupFailed = false;
+  try {
+    await ensureBookSettings(createSupabaseAdminClient(), book, getWikidata());
+  } catch (error) {
+    if (!(error instanceof ExternalApiError)) throw error;
+    console.error(error);
+    settingLookupFailed = true;
+  }
+
+  const places = await listBookPlaces(supabase, [book.id]);
+  return Response.json({
+    entry: { ...entry, places },
+    settingLookupFailed,
+  } satisfies UpsertShelfResponse);
 }
