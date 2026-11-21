@@ -22,6 +22,8 @@ export interface PlaceFacts {
   isCountry: boolean;
   isSettlement: boolean;
   isFirstLevelRegion: boolean;
+  /** Continents get one coordinate on Wikidata; pinning them would mislead. */
+  isContinent?: boolean;
   hasCoordinates: boolean;
   countryCode: string | null;
 }
@@ -32,6 +34,7 @@ export interface PlaceFacts {
  */
 export function classifyPlace(facts: PlaceFacts): LocationPrecision | null {
   if (facts.isFictional) return "fictional";
+  if (facts.isContinent) return null;
   if (facts.isCountry) return facts.countryCode ? "country" : null;
   if (facts.isFirstLevelRegion) return facts.countryCode ? "region" : null;
   if (facts.hasCoordinates) return facts.isSettlement ? "city" : "point";

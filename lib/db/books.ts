@@ -56,3 +56,14 @@ export async function findOrCreateBook(olWorkId: string, openLibrary: OpenLibrar
   if (error) throw error;
   return data;
 }
+
+/** A book row by our id (service role read; books are public anyway). */
+export async function findBookById(bookId: string) {
+  const { data, error } = await createSupabaseAdminClient()
+    .from("books")
+    .select(BOOK_COLUMNS)
+    .eq("id", bookId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}

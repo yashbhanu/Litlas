@@ -2,12 +2,7 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import {
-  getVersion,
-  setWorkerUrl,
-  type FilterSpecification,
-  type GeoJSONSource,
-} from "maplibre-gl";
+import type { FilterSpecification, GeoJSONSource } from "maplibre-gl";
 import { useMemo, useRef, useState } from "react";
 import Map, {
   Layer,
@@ -17,11 +12,8 @@ import Map, {
   type MapLayerMouseEvent,
   type MapRef,
 } from "react-map-gl/maplibre";
+import { MAP_COLORS } from "./maplibre-setup";
 import { mapBounds, type PinCollection, type PinProperties } from "@/lib/geo/map";
-
-// Bundlers don't emit MapLibre's worker file; scripts/copy-maplibre-worker.mjs copies it
-// into public/ on install under a versioned name.
-setWorkerUrl(`/maplibre/maplibre-gl-worker-${getVersion()}.mjs`);
 
 export interface MapCanvasProps {
   pins: PinCollection;
@@ -30,12 +22,7 @@ export interface MapCanvasProps {
   styleUrl: string;
 }
 
-const COLORS = {
-  country: "#0d9488",
-  pin: "#1d4ed8",
-  highlight: "#f59e0b",
-  cluster: "#1e40af",
-} as const;
+const COLORS = MAP_COLORS;
 
 const WORLD_VIEW = { longitude: 10, latitude: 25, zoom: 0.8 };
 

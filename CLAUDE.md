@@ -47,7 +47,18 @@ pnpm db:stop        # Stop it. Restart after editing supabase/config.toml (auth 
 pnpm db:reset       # Re-apply all migrations + supabase/seed.sql
 pnpm db:types       # Regenerate lib/db/database.types.ts from local DB
 pnpm countries:build   # Rebuild public/geo/countries.geojson + lib/geo/country-bounds.json (Natural Earth)
+pnpm seed --dry-run [--limit N]   # Wikidata seed import: fetch + normalize + log counts, no writes
+pnpm seed [--covers] [--refresh]  # Write to the DB in .env.local; --env <file> --yes for a non-local DB
 ```
+
+The seed (`scripts/seed-wikidata.ts`, pure logic in `lib/seed/wikidata-seed.ts`) splits the spec's single query, which times out on WDQS:
+
+1. List classes under literary work, excluding film, TV and video-game classes.
+2. Page book IDs per class with LIMIT/OFFSET.
+3. Fetch details in VALUES batches of 300, using `rdfs:label` rather than the label service, which is about 7× faster.
+4. Fetch place-classification flags in batches.
+
+Raw responses are cached in `data/seed/` (gitignored), so reruns are fast and offline. A batch that times out is split in half. Continents are never placed: Wikidata gives each one a single coordinate.
 
 `postinstall` copies MapLibre's web worker to `public/maplibre/maplibre-gl-worker-<version>.mjs` (gitignored). maplibre-gl 6 loads its worker from a file next to its module, which bundlers don't emit; `components/map/map-canvas.tsx` points `setWorkerUrl()` at the copy. If the map logs "Worker failed to load", run `pnpm install`.
 
@@ -80,8 +91,11 @@ lib/
                       wikidata.server.ts (process-wide instance), wikidata-constants.ts (verified P/Q ids)
   db/                 server.ts (user client, RLS), admin.ts (service role), browser.ts, proxy.ts,
                       books.ts / shelf.ts / places.ts / map.ts (typed queries),
+                      public.ts (cookie-less anon client + `use cache` reads for explore/book/place pages),
                       settings.ts (Wikidata setting lookup + cache writes), database.types.ts (generated)
+  seed/               wikidata-seed.ts (seed queries + normalization, pure)
   geo/                precision.ts (rules + classifyPlace), continents.ts (ISO → continent, names),
+                      bbox.ts (antimeridian split, padded/snapped request boxes),
                       map.ts (pins GeoJSON, stats, list view, mapBounds), country-bounds.json (generated)
   validation/         zod schemas (env, books, shelf, profile, auth)
   books/              client-safe helpers/types (cover URLs, ShelfEntry)
@@ -131,6 +145,12 @@ data/seed/            raw Wikidata dumps from the seed script (Phase 3)
 - Personal/public maps and stats cover shelf entries with status `read`. The shelf list shows every status, each with its setting summary.
 - Setting lookup runs inside `POST /api/shelf` (`ensureBookSettings`). A Wikidata failure doesn't block adding the book; `setting_checked_at` stays null so it retries. Places come back through the `book_place_coords(uuid[])` SQL function (security invoker, approved links only, plain lng/lat).
 - A book with no approved places triggers "Where is this book set?" after adding. Phase 4 adds the PlacePicker there.
+- Explore (`components/explore/`) loads pins with `GET /api/explore?bbox=&zoom=` (SQL `explore_places`, capped at 2,000, most-read first).
+  - The client requests a padded, grid-snapped box and only refetches when the view leaves it, or when a capped result is zoomed into.
+  - The map view lives in the URL hash (`#zoom/lat/lng`).
+- Public reads (`lib/db/public.ts`) are cached with tags `book-places` and `book:<id>`. Call `revalidateTag(tag, "max")` after changing book↔place links. `POST /api/shelf` does this after a setting lookup.
+- `POST /api/shelf` accepts `{ olWorkId }` (search results) or `{ bookId }` (known books, since seeded books may lack an Open Library ID).
+- `/book/[id]` and `/place/[id]`: `proxy.ts` 404s malformed IDs. With Cache Components, unknown valid IDs render not-found with `noindex`, but the status stays 200 because streaming has already started.
 - Rate limits for write routes use a Postgres counter table (e.g. 30 suggestions/day).
 - Wikidata class IDs (fictional location, country, city, literary work) must be verified before hard-coding. Keep them in one constants file.
 

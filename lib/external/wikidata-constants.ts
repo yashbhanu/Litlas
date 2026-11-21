@@ -27,8 +27,14 @@ export const Q = {
   humanSettlement: "Q486972",
   /** "first-level administrative division": states, provinces, regions. */
   firstLevelAdminDivision: "Q10864048",
+  /** "continent": large landmass. Too broad to pin (Wikidata gives each one point). */
+  continent: "Q5107",
   /** "fictional location": place that exists only in fiction. */
   fictionalLocation: "Q3895768",
   /** "literary work": written work read for enjoyment or edification. */
   literaryWork: "Q7725634",
+  /** Excluded from the seed: classes under literary work that are really screen works. */
+  film: "Q11424",
+  televisionProgram: "Q15416",
+  videoGame: "Q7889",
 } as const;

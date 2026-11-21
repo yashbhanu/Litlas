@@ -1,0 +1,983 @@
+{
+  "details": [
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q84"
+      },
+      "countryCode": {
+        "type": "literal",
+        "value": "GB"
+      },
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q319196"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q4410342"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "China Mi\u00e9ville"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "Kraken"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "London"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(-0.1275 51.507222222)"
+      },
+      "olid": {
+        "type": "literal",
+        "value": "OL14990804W"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q84"
+      },
+      "countryCode": {
+        "type": "literal",
+        "value": "GB"
+      },
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q207515"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q6173102"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "P. G. Wodehouse"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "Jeeves Takes Charge"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "London"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(-0.1275 51.507222222)"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q90"
+      },
+      "countryCode": {
+        "type": "literal",
+        "value": "FR"
+      },
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q3083791"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q123193881"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Fran\u00e7ois Am\u00e9d\u00e9e Doppet"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "M\u00e9moires de madame de Warens"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Paris"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(2.352222222 48.856666666)"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q90"
+      },
+      "countryCode": {
+        "type": "literal",
+        "value": "FR"
+      },
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q709670"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q82530"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Louis-S\u00e9bastien Mercier"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "L\u2019An 2440, r\u00eave s\u00b4il en fut jamais"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Paris"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(2.352222222 48.856666666)"
+      },
+      "olid": {
+        "type": "literal",
+        "value": "OL8984140M"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q50189"
+      },
+      "countryCode": {
+        "type": "literal",
+        "value": "FR"
+      },
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q3083791"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q123193881"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Fran\u00e7ois Am\u00e9d\u00e9e Doppet"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "M\u00e9moires de madame de Warens"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Annecy"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(6.129444444 45.899166666)"
+      }
+    },
+    {
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q3083791"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q123193881"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Fran\u00e7ois Am\u00e9d\u00e9e Doppet"
+      },
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q1"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "M\u00e9moires de madame de Warens"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "universe"
+      }
+    },
+    {
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q1208954"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q54806996"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Diane Carey"
+      },
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q2"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "First Frontier"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Earth"
+      },
+      "olid": {
+        "type": "literal",
+        "value": "OL27323795W"
+      }
+    },
+    {
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q3821154"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q54806996"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "James I. Kirkland"
+      },
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q2"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "First Frontier"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Earth"
+      },
+      "olid": {
+        "type": "literal",
+        "value": "OL27323795W"
+      }
+    },
+    {
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q3764878"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q3819297"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Giobbe Covatta"
+      },
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q15"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Africa"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(15.0 0.0)"
+      }
+    },
+    {
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q3083791"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q123193881"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Fran\u00e7ois Am\u00e9d\u00e9e Doppet"
+      },
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q39"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "M\u00e9moires de madame de Warens"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Switzerland"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(8.231973 46.798562)"
+      },
+      "ownCode": {
+        "type": "literal",
+        "value": "CH"
+      }
+    },
+    {
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q709670"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q82530"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Louis-S\u00e9bastien Mercier"
+      },
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q46"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "L\u2019An 2440, r\u00eave s\u00b4il en fut jamais"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Europe"
+      },
+      "olid": {
+        "type": "literal",
+        "value": "OL8984140M"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(15.5 53.5)"
+      }
+    },
+    {
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q1208954"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q54806996"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Diane Carey"
+      },
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q55440409"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "First Frontier"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Gateway"
+      },
+      "olid": {
+        "type": "literal",
+        "value": "OL27323795W"
+      }
+    },
+    {
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q3821154"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q54806996"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "James I. Kirkland"
+      },
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q55440409"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "First Frontier"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Gateway"
+      },
+      "olid": {
+        "type": "literal",
+        "value": "OL27323795W"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q21"
+      },
+      "countryCode": {
+        "type": "literal",
+        "value": "GB"
+      },
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q709670"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q82530"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Louis-S\u00e9bastien Mercier"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "L\u2019An 2440, r\u00eave s\u00b4il en fut jamais"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "England"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(-1.0 53.0)"
+      },
+      "olid": {
+        "type": "literal",
+        "value": "OL8984140M"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q21"
+      },
+      "countryCode": {
+        "type": "literal",
+        "value": "GB"
+      },
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q319196"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q4410342"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "China Mi\u00e9ville"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "Kraken"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "England"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(-1.0 53.0)"
+      },
+      "olid": {
+        "type": "literal",
+        "value": "OL14990804W"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q12745"
+      },
+      "countryCode": {
+        "type": "literal",
+        "value": "FR"
+      },
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q3083791"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q123193881"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Fran\u00e7ois Am\u00e9d\u00e9e Doppet"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "M\u00e9moires de madame de Warens"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Savoie"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(6.333333333 45.583333333)"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q165090"
+      },
+      "countryCode": {
+        "type": "literal",
+        "value": "FR"
+      },
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q3083791"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q123193881"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "Fran\u00e7ois Am\u00e9d\u00e9e Doppet"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "M\u00e9moires de madame de Warens"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Chamb\u00e9ry"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(5.920833333 45.566388888)"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q124098603"
+      },
+      "countryCode": {
+        "type": "literal",
+        "value": "GB"
+      },
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q207515"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q6173102"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "P. G. Wodehouse"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "Jeeves Takes Charge"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "Easeby"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q21"
+      },
+      "countryCode": {
+        "type": "literal",
+        "value": "GB"
+      },
+      "author": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q207515"
+      },
+      "book": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q6173102"
+      },
+      "authorLabel": {
+        "type": "literal",
+        "value": "P. G. Wodehouse"
+      },
+      "bookLabel": {
+        "type": "literal",
+        "value": "Jeeves Takes Charge"
+      },
+      "placeLabel": {
+        "type": "literal",
+        "value": "England"
+      },
+      "coord": {
+        "type": "literal",
+        "value": "Point(-1.0 53.0)"
+      }
+    }
+  ],
+  "flags": [
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q21"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "true"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "true"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "false"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q165090"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "false"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q55440409"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "true"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "false"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q124098603"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "true"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "false"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q12745"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "false"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q2"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "false"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q1"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "false"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q15"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "true"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q39"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "true"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "false"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q46"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "true"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q84"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "true"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "false"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q90"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "true"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "false"
+      }
+    },
+    {
+      "place": {
+        "type": "uri",
+        "value": "http://www.wikidata.org/entity/Q50189"
+      },
+      "isCountry": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isFictional": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isSettlement": {
+        "type": "literal",
+        "value": "true"
+      },
+      "isRegion": {
+        "type": "literal",
+        "value": "false"
+      },
+      "isContinent": {
+        "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+        "type": "literal",
+        "value": "false"
+      }
+    }
+  ]
+}

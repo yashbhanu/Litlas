@@ -133,6 +133,31 @@ isOneToOne: false
 { Args: { "p_book_ids": (string)[] }; Returns: {
               "book_id": string,"country_code": string,"lat": number,"lng": number,"name": string,"place_id": string,"precision": Database["public"]['Enums']["location_precision"],"source": Database["public"]['Enums']["location_source"]
             }[]
+                           },
+"books_at_place":
+{ Args: { "p_limit"?: number,"p_offset"?: number,"p_place_id": string }; Returns: {
+              "authors": (string)[],"cover_id": number,"first_publish_year": number,"id": string,"ol_work_id": string,"title": string,"total": number
+            }[]
+                           },
+"books_in_country":
+{ Args: { "p_country_code": string,"p_limit"?: number,"p_offset"?: number }; Returns: {
+              "authors": (string)[],"cover_id": number,"first_publish_year": number,"id": string,"ol_work_id": string,"title": string,"total": number
+            }[]
+                           },
+"explore_places":
+{ Args: { "max_features"?: number,"max_lat": number,"max_lng": number,"min_lat": number,"min_lng": number }; Returns: {
+              "book_count": number,"country_code": string,"lat": number,"lng": number,"name": string,"place_id": string
+            }[]
+                           },
+"place_detail":
+{ Args: { "p_place_id": string }; Returns: {
+              "country_code": string,"id": string,"lat": number,"lng": number,"name": string,"precision": Database["public"]['Enums']["location_precision"],"wikidata_id": string
+            }[]
+                           },
+"search_places":
+{ Args: { "max_results"?: number,"q": string }; Returns: {
+              "book_count": number,"country_code": string,"lat": number,"lng": number,"name": string,"place_id": string,"precision": Database["public"]['Enums']["location_precision"]
+            }[]
                            }
           }
           Enums: {

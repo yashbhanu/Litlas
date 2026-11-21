@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 const SIZES = {
   sm: { width: 40, height: 60, ol: "S" },
   md: { width: 64, height: 96, ol: "M" },
+  lg: { width: 160, height: 240, ol: "L" },
 } as const;
 
 /**

@@ -5,9 +5,10 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { apiFetch } from "@/lib/api-client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ApiRequestError, apiFetch } from "@/lib/api-client";
 import type { UpsertShelfResponse } from "@/lib/books/types";
-import type { BookSearchResult } from "@/lib/validation/books";
 import {
   SHELF_STATUSES,
   SHELF_STATUS_LABELS,
@@ -16,13 +17,24 @@ import {
 } from "@/lib/validation/shelf";
 import { BookCover } from "./book-cover";
 
+/** A book the form can add: a search result (by OL id) or a known book (by our id). */
+export interface AddableBook {
+  bookId?: string;
+  olWorkId: string | null;
+  title: string;
+  authors: string[];
+  firstPublishYear: number | null;
+  coverId: number | null;
+}
+
 export function AddBookForm({
   book,
   onBack,
   onAdded,
 }: {
-  book: BookSearchResult;
-  onBack: () => void;
+  book: AddableBook;
+  /** Omit to hide the back button (when the form isn't part of a search flow). */
+  onBack?: () => void;
   onAdded: (result: UpsertShelfResponse) => void;
 }) {
   const [status, setStatus] = useState<ShelfStatus>("read");
@@ -40,8 +52,14 @@ export function AddBookForm({
 
   function submit(event: FormEvent) {
     event.preventDefault();
+    const target = book.bookId
+      ? { bookId: book.bookId }
+      : book.olWorkId
+        ? { olWorkId: book.olWorkId }
+        : null;
+    if (!target) return;
     mutation.mutate({
-      olWorkId: book.olWorkId,
+      ...target,
       status,
       rating: rating ? Number(rating) : null,
       finishedOn: finishedOn || null,
@@ -114,20 +132,39 @@ export function AddBookForm({
         </div>
       ) : null}
 
-      {mutation.error ? (
-        <p role="alert" className="text-sm text-destructive">
-          {mutation.error.message}
-        </p>
-      ) : null}
+      {mutation.error ? <FormError error={mutation.error} /> : null}
 
       <div className="flex justify-between gap-2">
-        <Button type="button" variant="ghost" onClick={onBack}>
-          Back to results
-        </Button>
+        {onBack ? (
+          <Button type="button" variant="ghost" onClick={onBack}>
+            Back to results
+          </Button>
+        ) : (
+          <span />
+        )}
         <Button type="submit" disabled={mutation.isPending || mutation.isSuccess}>
           {mutation.isPending ? "Adding…" : "Add to shelf"}
         </Button>
       </div>
     </form>
+  );
+}
+
+function FormError({ error }: { error: Error }) {
+  const pathname = usePathname();
+  const code = error instanceof ApiRequestError ? error.code : null;
+  return (
+    <p role="alert" className="text-sm text-destructive">
+      {error.message}{" "}
+      {code === "unauthorized" ? (
+        <Link href={`/login?next=${encodeURIComponent(pathname)}`} className="underline">
+          Sign in
+        </Link>
+      ) : code === "profile_required" ? (
+        <Link href={`/onboarding?next=${encodeURIComponent(pathname)}`} className="underline">
+          Pick a username
+        </Link>
+      ) : null}
+    </p>
   );
 }

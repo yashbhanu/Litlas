@@ -117,11 +117,10 @@ function ShelfItem({ entry }: { entry: ShelfEntryWithPlaces }) {
           <select
             id={`status-${entry.id}`}
             value={entry.status}
-            disabled={busy || !book.olWorkId}
+            disabled={busy}
             onChange={(event) =>
-              book.olWorkId &&
               update.mutate({
-                olWorkId: book.olWorkId,
+                bookId: book.id,
                 status: event.target.value as ShelfStatus,
                 rating: entry.rating,
                 finishedOn: entry.finishedOn,

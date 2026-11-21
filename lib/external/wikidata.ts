@@ -12,10 +12,10 @@ const SERVICE = "wikidata";
 // ---------------------------------------------------------------------------
 
 const bindingValueSchema = z.object({ type: z.string(), value: z.string() });
-const sparqlResponseSchema = z.object({
+export const sparqlResponseSchema = z.object({
   results: z.object({ bindings: z.array(z.record(z.string(), bindingValueSchema)) }),
 });
-type Binding = z.infer<typeof sparqlResponseSchema>["results"]["bindings"][number];
+export type Binding = z.infer<typeof sparqlResponseSchema>["results"]["bindings"][number];
 
 // ---------------------------------------------------------------------------
 // Queries
@@ -46,7 +46,7 @@ export function bookByTitleAuthorQuery(title: string, author: string): string {
 
 export function narrativeLocationsQuery(bookQid: string): string {
   if (!qidPattern.test(bookQid)) throw new Error(`Invalid Wikidata id: ${bookQid}`);
-  return `SELECT ?place ?placeLabel ?coord ?countryCode ?ownCode ?isCountry ?isFictional ?isSettlement ?isRegion WHERE {
+  return `SELECT ?place ?placeLabel ?coord ?countryCode ?ownCode ?isCountry ?isFictional ?isSettlement ?isRegion ?isContinent WHERE {
   wd:${bookQid} wdt:${P.narrativeLocation} ?place .
   OPTIONAL { ?place wdt:${P.coordinates} ?coord . }
   OPTIONAL { ?place wdt:${P.country} ?country . ?country wdt:${P.isoAlpha2} ?countryCode . }
@@ -55,6 +55,7 @@ export function narrativeLocationsQuery(bookQid: string): string {
   BIND(EXISTS { ?place wdt:${P.instanceOf}/wdt:${P.subclassOf}* wd:${Q.fictionalLocation} } AS ?isFictional)
   BIND(EXISTS { ?place wdt:${P.instanceOf}/wdt:${P.subclassOf}* wd:${Q.humanSettlement} } AS ?isSettlement)
   BIND(EXISTS { ?place wdt:${P.instanceOf}/wdt:${P.subclassOf}* wd:${Q.firstLevelAdminDivision} } AS ?isRegion)
+  BIND(EXISTS { ?place wdt:${P.instanceOf}/wdt:${P.subclassOf}* wd:${Q.continent} } AS ?isContinent)
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
 }`;
 }
@@ -114,7 +115,13 @@ export function parseNarrativeLocations(bindings: Binding[]): WikidataPlace[] {
       coordinates: [number, number] | null;
       ownCode: string | null;
       countryCodes: string[];
-      flags: { isCountry: boolean; isFictional: boolean; isSettlement: boolean; isRegion: boolean };
+      flags: {
+        isCountry: boolean;
+        isFictional: boolean;
+        isSettlement: boolean;
+        isRegion: boolean;
+        isContinent: boolean;
+      };
     }
   >();
 
@@ -133,6 +140,7 @@ export function parseNarrativeLocations(bindings: Binding[]): WikidataPlace[] {
         isFictional: isTrue(binding, "isFictional"),
         isSettlement: isTrue(binding, "isSettlement"),
         isRegion: isTrue(binding, "isRegion"),
+        isContinent: isTrue(binding, "isContinent"),
       },
     };
     entry.coordinates ??= binding.coord ? parseWktPoint(binding.coord.value) : null;
@@ -155,6 +163,7 @@ export function parseNarrativeLocations(bindings: Binding[]): WikidataPlace[] {
       isCountry: entry.flags.isCountry || entry.ownCode !== null,
       isSettlement: entry.flags.isSettlement,
       isFirstLevelRegion: entry.flags.isRegion,
+      isContinent: entry.flags.isContinent,
       hasCoordinates: entry.coordinates !== null,
       countryCode,
     });

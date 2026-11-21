@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { continentOf, countryName } from "./continents";
-import countryBounds from "./country-bounds.json";
+import countryBoundsJson from "./country-bounds.json";
 import { isPinPrecision, type LocationPrecision } from "./precision";
 
 export type LocationSource = "wikidata" | "user" | "admin";
@@ -188,7 +188,7 @@ export type LngLatBounds = [[number, number], [number, number]];
 
 const COUNTRY_BOUNDS: Partial<Record<string, [number, number, number, number]>> = z
   .record(z.string(), z.tuple([z.number(), z.number(), z.number(), z.number()]))
-  .parse(countryBounds);
+  .parse(countryBoundsJson);
 
 /**
  * The box to fit when a map opens: every pin plus the mainland of every shaded country
@@ -208,4 +208,20 @@ export function mapBounds(pins: PinCollection, countries: string[]): LngLatBound
     [Math.min(...boxes.map((b) => b[0])), Math.min(...boxes.map((b) => b[1]))],
     [Math.max(...boxes.map((b) => b[2])), Math.max(...boxes.map((b) => b[3]))],
   ];
+}
+
+/** Mainland bounding box of a country, for flying to it. */
+export function countryBounds(code: string): LngLatBounds | null {
+  const box = COUNTRY_BOUNDS[code];
+  return box
+    ? [
+        [box[0], box[1]],
+        [box[2], box[3]],
+      ]
+    : null;
+}
+
+/** ISO codes we have shapes for (for country search). */
+export function knownCountryShapes(): string[] {
+  return Object.keys(COUNTRY_BOUNDS);
 }

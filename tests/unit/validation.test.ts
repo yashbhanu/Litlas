@@ -57,7 +57,22 @@ describe("upsertShelfEntrySchema", () => {
         rating: 5,
         finishedOn: "2026-06-16",
       }),
-    ).toEqual({ olWorkId: "OL86318W", status: "read", rating: 5, finishedOn: "2026-06-16" });
+    ).toEqual({
+      book: { kind: "openLibrary", olWorkId: "OL86318W" },
+      status: "read",
+      rating: 5,
+      finishedOn: "2026-06-16",
+    });
+  });
+
+  it("accepts our book id instead of an Open Library id", () => {
+    const bookId = "2b1f7c9e-6a7d-4d3c-9f61-0c7a3c2e5b11";
+    expect(upsertShelfEntrySchema.parse({ bookId, status: "want" })).toEqual({
+      book: { kind: "id", bookId },
+      status: "want",
+      rating: null,
+      finishedOn: null,
+    });
   });
 
   it("drops rating and date for want-to-read, and date for reading", () => {
@@ -85,6 +100,9 @@ describe("upsertShelfEntrySchema", () => {
     { olWorkId: "OL1W", status: "read", rating: 6 },
     { olWorkId: "OL1W", status: "read", rating: 2.5 },
     { olWorkId: "OL1W", status: "read", finishedOn: "16/06/2026" },
+    { status: "read" },
+    { olWorkId: "OL1W", bookId: "2b1f7c9e-6a7d-4d3c-9f61-0c7a3c2e5b11", status: "read" },
+    { bookId: "not-a-uuid", status: "read" },
   ])("rejects %o", (input) => {
     expect(upsertShelfEntrySchema.safeParse(input).success).toBe(false);
   });

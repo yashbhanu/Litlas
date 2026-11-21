@@ -8,9 +8,14 @@ export function SiteHeader() {
   return (
     <header className="border-b">
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between gap-4 px-4">
-        <Link href="/" className="font-semibold tracking-tight">
-          Literary World Map
-        </Link>
+        <div className="flex items-center gap-1 sm:gap-4">
+          <Link href="/" className="font-semibold tracking-tight">
+            Literary World Map
+          </Link>
+          <Link href="/explore" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+            Explore
+          </Link>
+        </div>
         <Suspense fallback={<Skeleton className="h-8 w-24" />}>
           <UserNav />
         </Suspense>

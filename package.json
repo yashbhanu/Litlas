@@ -19,7 +19,8 @@
     "db:types": "supabase gen types typescript > lib/db/database.types.ts",
     "test:integration": "vitest run --config vitest.integration.config.mts",
     "postinstall": "node scripts/copy-maplibre-worker.mjs",
-    "countries:build": "node scripts/build-countries.ts"
+    "countries:build": "node scripts/build-countries.ts",
+    "seed": "tsx --conditions=react-server scripts/seed-wikidata.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -57,6 +58,7 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "supabase": "^3.1.0",
     "tailwindcss": "4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^5",
     "vite": "8.3.8",
     "vitest": "^5.1.0"

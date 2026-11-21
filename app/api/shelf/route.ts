@@ -1,9 +1,11 @@
+import { revalidateTag } from "next/cache";
 import { apiError, isPostgrestError, parseJsonBody, PG } from "@/lib/api";
 import { getProfile, getSessionUser } from "@/lib/auth";
 import type { UpsertShelfResponse } from "@/lib/books/types";
 import { createSupabaseAdminClient } from "@/lib/db/admin";
-import { findOrCreateBook } from "@/lib/db/books";
+import { findBookById, findOrCreateBook } from "@/lib/db/books";
 import { listBookPlaces } from "@/lib/db/places";
+import { BOOK_PLACES_TAG, bookTag } from "@/lib/db/public";
 import { createSupabaseServerClient } from "@/lib/db/server";
 import { ensureBookSettings } from "@/lib/db/settings";
 import { upsertShelfEntry } from "@/lib/db/shelf";
@@ -26,7 +28,10 @@ export async function POST(request: Request) {
 
   let book;
   try {
-    book = await findOrCreateBook(input.olWorkId, getOpenLibrary());
+    book =
+      input.book.kind === "id"
+        ? await findBookById(input.book.bookId)
+        : await findOrCreateBook(input.book.olWorkId, getOpenLibrary());
   } catch (error) {
     if (error instanceof ExternalApiError) {
       console.error(error);
@@ -37,7 +42,12 @@ export async function POST(request: Request) {
     }
     throw error;
   }
-  if (!book) return apiError("not_found", "That book wasn't found on Open Library.");
+  if (!book) {
+    return apiError(
+      "not_found",
+      input.book.kind === "id" ? "Book not found." : "That book wasn't found on Open Library.",
+    );
+  }
 
   const supabase = await createSupabaseServerClient();
   let entry;
@@ -60,7 +70,11 @@ export async function POST(request: Request) {
   // A Wikidata outage doesn't block adding the book; the lookup is retried next time.
   let settingLookupFailed = false;
   try {
-    await ensureBookSettings(createSupabaseAdminClient(), book, getWikidata());
+    if (await ensureBookSettings(createSupabaseAdminClient(), book, getWikidata())) {
+      // New links show up on Explore, place pages and the book page.
+      revalidateTag(BOOK_PLACES_TAG, "max");
+      revalidateTag(bookTag(book.id), "max");
+    }
   } catch (error) {
     if (!(error instanceof ExternalApiError)) throw error;
     console.error(error);

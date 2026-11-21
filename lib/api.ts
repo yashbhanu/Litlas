@@ -67,3 +67,6 @@ export function isPostgrestError(error: unknown): error is { code: string; messa
     typeof (error as { code: unknown }).code === "string"
   );
 }
+
+/** CDN caching for public, rarely-changing responses (explore, place/country lists). */
+export const PUBLIC_CACHE = "public, s-maxage=300, stale-while-revalidate=3600";

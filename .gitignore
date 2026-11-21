@@ -51,3 +51,7 @@ next-env.d.ts
 supabase/.temp
 supabase/.branches
 public/maplibre/
+
+# Seed import raw Wikidata responses (scripts/seed-wikidata.ts)
+data/seed/*
+!data/seed/.gitkeep
