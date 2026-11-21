@@ -203,10 +203,10 @@ describe("settingSummary", () => {
     );
     const many = ["A", "B", "C", "D", "E"].map((name) => place("x", { name }));
     expect(settingSummary(many)).toBe("A, B, C +2 more");
-    // Broader places come first.
+    // Countries and regions first; cities and places keep the API's order (most notable first).
     const mixed = [
-      place("x", { name: "A pub", precision: "point" }),
       place("x", { name: "Dublin", precision: "city" }),
+      place("x", { name: "A pub", precision: "point" }),
       place("x", { name: "Ireland", precision: "country" }),
     ];
     expect(settingSummary(mixed)).toBe("Ireland, Dublin, A pub");

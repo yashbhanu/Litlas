@@ -21,7 +21,8 @@ export function AddToShelfButton({
   size = "sm",
 }: {
   book: BookSummary;
-  size?: "sm" | "default";
+  /** "icon": a compact square "+" button for book lists. */
+  size?: "sm" | "default" | "icon";
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -29,13 +30,30 @@ export function AddToShelfButton({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={<Button size={size} variant={added ? "ghost" : "outline"} />}
-        aria-label={`Add ${book.title} to shelf`}
-      >
-        {added ? <CheckIcon aria-hidden /> : <PlusIcon aria-hidden />}
-        {added ? "On your shelf" : "Add to shelf"}
-      </DialogTrigger>
+      {size === "icon" ? (
+        <DialogTrigger
+          render={
+            <Button
+              size="icon-lg"
+              variant="outline"
+              className="rounded-xl text-primary hover:bg-secondary hover:text-secondary-foreground"
+            />
+          }
+          aria-label={added ? `${book.title} is on your shelf` : `Add ${book.title} to shelf`}
+        >
+          {added ? <CheckIcon aria-hidden /> : <PlusIcon aria-hidden />}
+        </DialogTrigger>
+      ) : (
+        <DialogTrigger
+          render={
+            <Button size={size === "default" ? "lg" : "sm"} variant={added ? "ghost" : "outline"} />
+          }
+          aria-label={`Add ${book.title} to shelf`}
+        >
+          {added ? <CheckIcon aria-hidden /> : <PlusIcon aria-hidden />}
+          {added ? "On your shelf" : "Add to shelf"}
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Add to shelf</DialogTitle>

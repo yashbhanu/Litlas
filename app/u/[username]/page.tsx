@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
+import { LockIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ReadOnlyShelf } from "@/components/books/read-only-shelf";
-import { MapLayout } from "@/components/map/map-layout";
-import { MapPageSkeleton } from "@/components/map/map-page-skeleton";
 import { MapView } from "@/components/map/map-view";
 import { PlaceList } from "@/components/map/place-list";
-import { StatsBar } from "@/components/map/stats-bar";
+import { ReadingMapSkeleton } from "@/components/reading-map/reading-map-skeleton";
+import { Panel, ReadingMapLayout } from "@/components/reading-map/reading-map-layout";
+import { RecentlyRead } from "@/components/reading-map/recently-read";
+import { ShareButton } from "@/components/reading-map/share-button";
+import { StatCards } from "@/components/reading-map/stat-cards";
 import { getSessionUser } from "@/lib/auth";
 import { findProfileByUsername, loadShelfMap } from "@/lib/db/map";
 import { createSupabaseServerClient } from "@/lib/db/server";
@@ -22,7 +25,7 @@ export async function generateMetadata({ params }: PageProps<"/u/[username]">): 
 export default function UserPage({ params }: PageProps<"/u/[username]">) {
   return (
     <main className="flex flex-1 flex-col">
-      <Suspense fallback={<MapPageSkeleton label="Loading reading map" />}>
+      <Suspense fallback={<ReadingMapSkeleton label="Loading reading map" />}>
         <UserContent params={params} />
       </Suspense>
     </main>
@@ -42,8 +45,11 @@ async function UserContent({ params }: { params: PageProps<"/u/[username]">["par
 
   if (!profile.isPublic && !isOwner) {
     return (
-      <div className="mx-auto w-full max-w-lg space-y-2 px-4 py-16 text-center">
-        <h1 className="text-xl font-semibold tracking-tight">@{profile.username}</h1>
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-3 px-4 py-16 text-center">
+        <span className="flex size-12 items-center justify-center rounded-full bg-muted">
+          <LockIcon aria-hidden className="size-5 text-muted-foreground" />
+        </span>
+        <h1 className="text-2xl font-semibold tracking-tight">@{profile.username}</h1>
         <p className="text-muted-foreground">This reader keeps their map private.</p>
       </div>
     );
@@ -52,37 +58,46 @@ async function UserContent({ params }: { params: PageProps<"/u/[username]">["par
   const { entries, map } = await loadShelfMap(supabase, profile.id);
 
   return (
-    <MapLayout
+    <ReadingMapLayout
       panelLabel={`${name}'s shelf and stats`}
+      head={
+        <div className="space-y-5">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-3xl font-semibold tracking-tight">{name}&apos;s reading map</h1>
+              {profile.displayName ? (
+                <p className="mt-0.5 text-sm text-muted-foreground">@{profile.username}</p>
+              ) : null}
+            </div>
+            <ShareButton username={profile.username} isPublic={profile.isPublic} />
+          </div>
+          {isOwner && !profile.isPublic ? (
+            <p className="rounded-xl bg-muted px-3 py-2 text-sm">
+              Your profile is private. Only you can see this page.
+            </p>
+          ) : null}
+          <StatCards stats={map.stats} />
+        </div>
+      }
       map={
         <MapView
           pins={map.pins}
           countries={map.countries}
           label={`Map of books ${name} has read`}
+          showLegend
         />
       }
     >
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight">{name}&apos;s reading map</h1>
-        {profile.displayName ? (
-          <p className="text-sm text-muted-foreground">@{profile.username}</p>
-        ) : null}
-        {isOwner && !profile.isPublic ? (
-          <p className="mt-2 rounded-md bg-muted px-3 py-2 text-sm">
-            Your profile is private. Only you can see this page.
-          </p>
-        ) : null}
-      </div>
-
-      <StatsBar stats={map.stats} />
-      <PlaceList map={map} emptyText="No books read yet." />
-
-      <section aria-labelledby="public-shelf-title" className="space-y-3">
-        <h2 id="public-shelf-title" className="text-base font-semibold">
+      <RecentlyRead entries={entries} />
+      <Panel>
+        <PlaceList map={map} emptyText="No books read yet." />
+      </Panel>
+      <section id="shelf" aria-labelledby="public-shelf-title" className="scroll-mt-24 space-y-3">
+        <h2 id="public-shelf-title" className="text-lg font-semibold">
           Shelf
         </h2>
         <ReadOnlyShelf entries={entries} />
       </section>
-    </MapLayout>
+    </ReadingMapLayout>
   );
 }

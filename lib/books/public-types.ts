@@ -9,6 +9,8 @@ export interface BookSummary {
   authors: string[];
   firstPublishYear: number | null;
   coverId: number | null;
+  /** Where the book is set, in the context of the list (e.g. "Bogotá"). */
+  setting?: string | null;
 }
 
 export interface BookListPage {
@@ -61,6 +63,19 @@ export interface PlaceSearchResult {
   lng: number | null;
   lat: number | null;
   bookCount: number;
+}
+
+export interface CountryPlace {
+  placeId: string;
+  name: string;
+  bookCount: number;
+}
+
+/** Books in a country, plus its top places and how many places it has. */
+export interface CountryBookPage extends BookListPage {
+  country: { code: string; name: string };
+  topPlaces: CountryPlace[];
+  placeCount: number;
 }
 
 export const BOOK_PAGE_SIZE = 20;

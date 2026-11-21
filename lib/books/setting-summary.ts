@@ -5,14 +5,15 @@ const PRECISION_ORDER: Record<BookPlace["precision"], number> = {
   country: 0,
   region: 1,
   city: 2,
-  point: 3,
-  fictional: 4,
+  point: 2,
+  fictional: 3,
 };
 
 /** One line describing where a book is set: real places first, then fictional ones. */
 export function settingSummary(places: BookPlace[]): string {
   if (places.length === 0) return "No setting yet";
-  // Broadest first (countries, regions, cities), then landmarks.
+  // Countries and regions first, then cities and places in the order given (the API
+  // lists a book's places most notable first).
   const real = places
     .filter((place) => place.precision !== "fictional")
     .sort((a, b) => PRECISION_ORDER[a.precision] - PRECISION_ORDER[b.precision])

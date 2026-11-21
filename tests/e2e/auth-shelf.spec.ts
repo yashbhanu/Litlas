@@ -75,7 +75,7 @@ test.describe("sign up and manage shelf", () => {
     userId = profile!.id;
 
     // Search Open Library: results show covers.
-    await page.getByRole("button", { name: "Add a book" }).click();
+    await page.getByRole("button", { name: "Add a book" }).first().click();
     const dialog = page.getByRole("dialog", { name: "Add a book" });
     await dialog.getByLabel("Search by title or author").fill("Ulysses");
     const results = dialog.getByRole("list", { name: "Search results" });

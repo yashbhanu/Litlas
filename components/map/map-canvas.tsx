@@ -3,7 +3,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import type { FilterSpecification, GeoJSONSource } from "maplibre-gl";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   Layer,
   NavigationControl,
@@ -12,7 +12,8 @@ import Map, {
   type MapLayerMouseEvent,
   type MapRef,
 } from "react-map-gl/maplibre";
-import { MAP_COLORS } from "./maplibre-setup";
+import { MapLegend } from "./map-legend";
+import { MAP_COLORS, tuneBasemap } from "./maplibre-setup";
 import { mapBounds, type PinCollection, type PinProperties } from "@/lib/geo/map";
 
 export interface MapCanvasProps {
@@ -20,6 +21,7 @@ export interface MapCanvasProps {
   /** ISO alpha-2 codes of countries to shade. */
   countries: string[];
   styleUrl: string;
+  showLegend?: boolean;
 }
 
 const COLORS = MAP_COLORS;
@@ -56,8 +58,33 @@ function toPinProperties(properties: Record<string, unknown>): PinProperties | n
  * of a book highlighted together on hover, and a popup listing the books at a pin.
  * Loaded client-side only (see MapView).
  */
-export default function MapCanvas({ pins, countries, styleUrl }: MapCanvasProps) {
+export default function MapCanvas({
+  pins,
+  countries,
+  styleUrl,
+  showLegend = false,
+}: MapCanvasProps) {
   const mapRef = useRef<MapRef>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const userMoved = useRef(false);
+
+  // The container may get its real size only after the map has loaded (grid layouts),
+  // so fit the books whenever it resizes, until the reader moves the map themselves.
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const fit = () => {
+      const map = mapRef.current;
+      const bounds = mapBounds(pins, countries);
+      if (!map || !bounds || userMoved.current) return;
+      if (wrapper.clientWidth < 50 || wrapper.clientHeight < 50) return;
+      map.resize();
+      map.fitBounds(bounds, { padding: 40, maxZoom: 5, duration: 0 });
+    };
+    const observer = new ResizeObserver(fit);
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, [pins, countries]);
   const [hoveredBook, setHoveredBook] = useState<string | null>(null);
   const [popup, setPopup] = useState<PopupState | null>(null);
   const [cursor, setCursor] = useState<string>("");
@@ -105,111 +132,127 @@ export default function MapCanvas({ pins, countries, styleUrl }: MapCanvasProps)
   }
 
   return (
-    <Map
-      ref={mapRef}
-      initialViewState={view}
-      mapStyle={styleUrl}
-      style={{ width: "100%", height: "100%" }}
-      interactiveLayerIds={["clusters", "pins"]}
-      cursor={cursor}
-      onMouseMove={onMouseMove}
-      onMouseLeave={() => {
-        setCursor("");
-        setHoveredBook(null);
-      }}
-      onClick={onClick}
-      attributionControl={{ compact: true }}
-      dragRotate={false}
-      touchPitch={false}
-    >
-      <NavigationControl position="top-right" showCompass={false} />
+    <div ref={wrapperRef} className="relative size-full">
+      <Map
+        ref={mapRef}
+        initialViewState={view}
+        mapStyle={styleUrl}
+        style={{ width: "100%", height: "100%" }}
+        interactiveLayerIds={["clusters", "pins"]}
+        cursor={cursor}
+        onMouseMove={onMouseMove}
+        onMouseLeave={() => {
+          setCursor("");
+          setHoveredBook(null);
+        }}
+        onClick={onClick}
+        onLoad={(event) => {
+          tuneBasemap(event.target);
+          const bounds = mapBounds(pins, countries);
+          const { clientWidth, clientHeight } = event.target.getContainer();
+          if (bounds && clientWidth >= 50 && clientHeight >= 50) {
+            event.target.resize();
+            event.target.fitBounds(bounds, { padding: 40, maxZoom: 5, duration: 0 });
+          }
+        }}
+        onMoveStart={(event) => {
+          // Only real gestures (not our own fitBounds) stop the auto-fit.
+          if (event.originalEvent) userMoved.current = true;
+        }}
+        attributionControl={{ compact: true }}
+        dragRotate={false}
+        touchPitch={false}
+      >
+        <NavigationControl position="top-right" showCompass={false} />
 
-      <Source id="countries" type="geojson" data="/geo/countries.geojson">
-        <Layer
-          id="countries-fill"
-          type="fill"
-          filter={countryFilter}
-          paint={{ "fill-color": COLORS.country, "fill-opacity": 0.3 }}
-        />
-        <Layer
-          id="countries-line"
-          type="line"
-          filter={countryFilter}
-          paint={{ "line-color": COLORS.country, "line-width": 1 }}
-        />
-      </Source>
+        <Source id="countries" type="geojson" data="/geo/countries.geojson">
+          <Layer
+            id="countries-fill"
+            type="fill"
+            filter={countryFilter}
+            paint={{ "fill-color": COLORS.country, "fill-opacity": 0.55 }}
+          />
+          <Layer
+            id="countries-line"
+            type="line"
+            filter={countryFilter}
+            paint={{ "line-color": COLORS.country, "line-width": 1.25 }}
+          />
+        </Source>
 
-      <Source id="pins" type="geojson" data={pins} cluster clusterMaxZoom={12} clusterRadius={40}>
-        <Layer
-          id="clusters"
-          type="circle"
-          filter={["has", "point_count"]}
-          paint={{
-            "circle-color": COLORS.cluster,
-            "circle-opacity": 0.85,
-            "circle-radius": ["step", ["get", "point_count"], 14, 10, 18, 50, 24],
-            "circle-stroke-color": "#ffffff",
-            "circle-stroke-width": 2,
-          }}
-        />
-        <Layer
-          id="cluster-count"
-          type="symbol"
-          filter={["has", "point_count"]}
-          layout={{
-            "text-field": ["get", "point_count_abbreviated"],
-            "text-font": ["Noto Sans Regular"],
-            "text-size": 12,
-            "text-allow-overlap": true,
-          }}
-          paint={{ "text-color": "#ffffff" }}
-        />
-        <Layer
-          id="pins"
-          type="circle"
-          filter={["!", ["has", "point_count"]]}
-          paint={{
-            "circle-color": COLORS.pin,
-            "circle-radius": 7,
-            "circle-stroke-color": "#ffffff",
-            "circle-stroke-width": 2,
-          }}
-        />
-        <Layer
-          id="pins-highlight"
-          type="circle"
-          filter={[
-            "all",
-            ["!", ["has", "point_count"]],
-            ["==", ["get", "bookId"], hoveredBook ?? ""],
-          ]}
-          paint={{
-            "circle-color": COLORS.highlight,
-            "circle-radius": 9,
-            "circle-stroke-color": "#ffffff",
-            "circle-stroke-width": 2,
-          }}
-        />
-      </Source>
+        <Source id="pins" type="geojson" data={pins} cluster clusterMaxZoom={12} clusterRadius={40}>
+          <Layer
+            id="clusters"
+            type="circle"
+            filter={["has", "point_count"]}
+            paint={{
+              "circle-color": COLORS.cluster,
+              "circle-opacity": 0.95,
+              "circle-radius": ["step", ["get", "point_count"], 15, 10, 19, 50, 25],
+              "circle-stroke-color": "#ffffff",
+              "circle-stroke-width": 2,
+            }}
+          />
+          <Layer
+            id="cluster-count"
+            type="symbol"
+            filter={["has", "point_count"]}
+            layout={{
+              "text-field": ["get", "point_count_abbreviated"],
+              "text-font": ["Noto Sans Bold"],
+              "text-size": 12,
+              "text-allow-overlap": true,
+            }}
+            paint={{ "text-color": "#ffffff" }}
+          />
+          <Layer
+            id="pins"
+            type="circle"
+            filter={["!", ["has", "point_count"]]}
+            paint={{
+              "circle-color": COLORS.pin,
+              "circle-radius": 6.5,
+              "circle-stroke-color": "#ffffff",
+              "circle-stroke-width": 2,
+            }}
+          />
+          <Layer
+            id="pins-highlight"
+            type="circle"
+            filter={[
+              "all",
+              ["!", ["has", "point_count"]],
+              ["==", ["get", "bookId"], hoveredBook ?? ""],
+            ]}
+            paint={{
+              "circle-color": COLORS.highlight,
+              "circle-radius": 9,
+              "circle-stroke-color": "#ffffff",
+              "circle-stroke-width": 2,
+            }}
+          />
+        </Source>
 
-      {popup ? (
-        <Popup
-          longitude={popup.longitude}
-          latitude={popup.latitude}
-          onClose={() => setPopup(null)}
-          closeOnClick={false}
-          maxWidth="260px"
-        >
-          <ul className="space-y-1 pr-4 text-sm text-neutral-900">
-            {popup.items.map((item) => (
-              <li key={`${item.bookId}-${item.placeId}`}>
-                <span className="font-medium">{item.title}</span>
-                <span className="block text-xs text-neutral-600">{item.placeName}</span>
-              </li>
-            ))}
-          </ul>
-        </Popup>
-      ) : null}
-    </Map>
+        {popup ? (
+          <Popup
+            longitude={popup.longitude}
+            latitude={popup.latitude}
+            onClose={() => setPopup(null)}
+            closeOnClick={false}
+            maxWidth="260px"
+          >
+            <ul className="space-y-1 pr-4 text-sm text-neutral-900">
+              {popup.items.map((item) => (
+                <li key={`${item.bookId}-${item.placeId}`}>
+                  <span className="font-medium">{item.title}</span>
+                  <span className="block text-xs text-neutral-600">{item.placeName}</span>
+                </li>
+              ))}
+            </ul>
+          </Popup>
+        ) : null}
+      </Map>
+      {showLegend ? <MapLegend countryLabel="Countries you've read" /> : null}
+    </div>
   );
 }

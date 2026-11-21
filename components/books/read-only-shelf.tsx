@@ -19,15 +19,20 @@ export function ReadOnlyShelf({ entries }: { entries: ShelfEntryWithPlaces[] }) 
               {SHELF_STATUS_LABELS[status]}{" "}
               <span className="font-normal text-muted-foreground tabular-nums">{group.length}</span>
             </h3>
-            <ul
-              className="mt-2 divide-y rounded-lg border"
-              aria-label={SHELF_STATUS_LABELS[status]}
-            >
+            <ul className="mt-2 space-y-2" aria-label={SHELF_STATUS_LABELS[status]}>
               {group.map(({ id, book, places, rating }) => (
-                <li key={id} className="flex gap-3 p-3">
+                <li
+                  key={id}
+                  className="flex gap-3 rounded-2xl border bg-background p-3 shadow-xs lg:shadow-none"
+                >
                   <BookCover coverId={book.coverId} title={book.title} size="sm" />
                   <div className="min-w-0 text-sm">
-                    <p className="font-medium">{book.title}</p>
+                    <a
+                      href={`/book/${book.id}`}
+                      className="font-semibold underline-offset-4 hover:underline"
+                    >
+                      {book.title}
+                    </a>
                     <p className="text-muted-foreground">
                       {book.authors.join(", ") || "Unknown author"}
                     </p>

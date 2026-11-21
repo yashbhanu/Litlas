@@ -133,6 +133,17 @@ data/seed/            raw Wikidata dumps from the seed script (Phase 3)
 - Private profiles: username and display name stay publicly visible, but the shelf/map is hidden by RLS.
 - Accessibility: keyboard navigable, visible focus, alt text on covers, and a list view alongside every map.
 - Attribution: Open Library and Wikidata in the footer and on book pages, OpenStreetMap on maps.
+- UI follows the mockups (`Literary World Map — UI mockups.pdf`).
+  - Visual tokens:
+    - Colours are tokens in `app/globals.css`: primary teal, `pin` orange, `cluster` navy, `warm` (prompt card) and `surface`.
+    - Map colours mirror them in `components/map/maplibre-setup.ts` (`MAP_COLORS`, `tuneBasemap`), on top of the OpenFreeMap **positron** style.
+    - Fonts are Inter (body) and Space Grotesk (`font-heading`, applied to h1–h3).
+  - Layout:
+    - A sticky header with nav, global search (`/api/search`) and "Add a book".
+    - A bottom tab bar on phones. The CSS variables `--app-header` and `--app-tabbar` size full-height pages.
+    - `/explore` uses `MapLayout`: a side panel, or a bottom sheet on phones.
+    - `/me` and `/u/[username]` use `ReadingMapLayout`: stacked cards on phones, map plus panel on desktop.
+  - Client components that call `usePathname` / `useSearchParams` must render inside `<Suspense>`, with a fallback that doesn't call the hook (`NavLinks`, `TabLinks`).
 - Use `components/books/book-cover.tsx` for covers (`next/image`, `unoptimized` to stay inside the Vercel Hobby image quota, with a placeholder when missing).
 - Client components talk to our API with TanStack Query + `apiFetch`. After a mutation that changes server-rendered data, call `router.refresh()`.
 

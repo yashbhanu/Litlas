@@ -14,13 +14,13 @@ import {
 } from "@/components/ui/dialog";
 import { AddBookFlow } from "./add-book-flow";
 
-export function AddBookDialog() {
+export function AddBookDialog({ triggerClassName }: { triggerClassName?: string } = {}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button />}>
+      <DialogTrigger render={<Button className={triggerClassName} />}>
         <PlusIcon aria-hidden />
         Add a book
       </DialogTrigger>

@@ -20,8 +20,8 @@ export function MapLayout({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    // 57px = site header (h-14 + 1px border).
-    <div className="flex h-[calc(100dvh-57px)] min-h-[480px] flex-col lg:flex-row">
+    // Full height below the sticky header (and above the phone tab bar).
+    <div className="flex h-[calc(100dvh-var(--app-header)-var(--app-tabbar))] min-h-[480px] flex-col lg:flex-row">
       <div className="relative min-h-0 flex-1">{map}</div>
       <aside
         aria-label={panelLabel}
@@ -29,7 +29,7 @@ export function MapLayout({
         className={cn(
           "flex flex-col rounded-t-xl border-t bg-background shadow-[0_-4px_16px_rgb(0_0_0/0.08)] transition-[height] duration-200",
           expanded ? "h-[85%]" : "h-[45%]",
-          "lg:h-auto lg:w-[420px] lg:rounded-none lg:border-t-0 lg:border-l lg:shadow-none",
+          "lg:h-auto lg:w-[440px] lg:rounded-none lg:border-t-0 lg:border-l lg:shadow-none",
         )}
       >
         <button
@@ -47,7 +47,7 @@ export function MapLayout({
             {expanded ? "Show more map" : "Expand list"}
           </span>
         </button>
-        <div className="min-h-0 flex-1 space-y-6 overflow-y-auto p-4 pt-2 lg:pt-4">{children}</div>
+        <div className="min-h-0 flex-1 space-y-6 overflow-y-auto p-4 pt-2 lg:p-6">{children}</div>
       </aside>
     </div>
   );

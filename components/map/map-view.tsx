@@ -19,10 +19,12 @@ export function MapView({
   pins,
   countries,
   label,
+  showLegend = false,
 }: {
   pins: PinCollection;
   countries: string[];
   label: string;
+  showLegend?: boolean;
 }) {
   const summary = `${pins.features.length} ${pins.features.length === 1 ? "pin" : "pins"} and ${countries.length} shaded ${countries.length === 1 ? "country" : "countries"}. The list next to the map has the same information.`;
 
@@ -33,6 +35,7 @@ export function MapView({
         pins={pins}
         countries={countries}
         styleUrl={getPublicEnv().NEXT_PUBLIC_MAP_STYLE_URL}
+        showLegend={showLegend}
       />
     </section>
   );

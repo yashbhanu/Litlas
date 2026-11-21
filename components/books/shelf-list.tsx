@@ -39,7 +39,8 @@ export function ShelfList({ entries }: { entries: ShelfEntryWithPlaces[] }) {
           <Button
             key={value}
             size="sm"
-            variant={filter === value ? "default" : "outline"}
+            variant={filter === value ? "secondary" : "outline"}
+            className="rounded-full"
             aria-pressed={filter === value}
             onClick={() => setFilter(value)}
           >
@@ -49,13 +50,13 @@ export function ShelfList({ entries }: { entries: ShelfEntryWithPlaces[] }) {
       </div>
 
       {entries.length === 0 ? (
-        <p className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
+        <p className="rounded-2xl border border-dashed bg-background p-8 text-center text-sm text-muted-foreground">
           Your shelf is empty. Add the first book you&apos;ve read.
         </p>
       ) : visible.length === 0 ? (
         <p className="text-sm text-muted-foreground">No books with this status yet.</p>
       ) : (
-        <ul className="divide-y rounded-lg border" aria-label="Books on your shelf">
+        <ul className="space-y-2" aria-label="Books on your shelf">
           {visible.map((entry) => (
             <ShelfItem key={entry.id} entry={entry} />
           ))}
@@ -84,11 +85,16 @@ function ShelfItem({ entry }: { entry: ShelfEntryWithPlaces }) {
   const busy = update.isPending || remove.isPending || remove.isSuccess;
 
   return (
-    <li className="flex gap-3 p-3" aria-busy={busy || undefined}>
+    <li
+      className="flex gap-3 rounded-2xl border bg-background p-3 shadow-xs lg:shadow-none"
+      aria-busy={busy || undefined}
+    >
       <BookCover coverId={book.coverId} title={book.title} />
       <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="font-medium">{book.title}</p>
+          <a href={`/book/${book.id}`} className="font-semibold underline-offset-4 hover:underline">
+            {book.title}
+          </a>
           <p className="text-sm text-muted-foreground">
             {[book.authors.join(", "), book.firstPublishYear].filter(Boolean).join(" · ") ||
               "Unknown author"}

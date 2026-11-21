@@ -8,12 +8,14 @@ import {
   type BookDetail,
   type BookListPage,
   type BookSummary,
+  type CountryBookPage,
   type ExploreResponse,
   type PlaceDetail,
   type PlaceSearchResult,
 } from "@/lib/books/public-types";
 import { getPublicEnv } from "@/lib/env";
 import type { Bbox } from "@/lib/geo/bbox";
+import { countryName } from "@/lib/geo/continents";
 import type { Database } from "./database.types";
 import { fetchAllPages } from "./paging";
 import { listBookPlaces } from "./places";
@@ -82,7 +84,9 @@ export async function explorePlaces(boxes: Bbox[]): Promise<ExploreResponse> {
   };
 }
 
-type BookListRow = Database["public"]["Functions"]["books_at_place"]["Returns"][number];
+type BookListRow = Database["public"]["Functions"]["books_at_place"]["Returns"][number] & {
+  setting?: string | null;
+};
 
 function toBookPage(rows: BookListRow[], page: number): BookListPage {
   const total = Number(rows[0]?.total ?? 0);
@@ -94,6 +98,7 @@ function toBookPage(rows: BookListRow[], page: number): BookListPage {
       authors: row.authors,
       firstPublishYear: row.first_publish_year,
       coverId: row.cover_id,
+      setting: row.setting ?? null,
     })),
     total,
     page,
@@ -115,17 +120,43 @@ export async function getBooksAtPlace(placeId: string, page: number): Promise<Bo
   return toBookPage(data, page);
 }
 
-export async function getBooksInCountry(countryCode: string, page: number): Promise<BookListPage> {
+export async function getBooksInCountry(
+  countryCode: string,
+  page: number,
+): Promise<CountryBookPage> {
   "use cache";
   cacheLife("hours");
   cacheTag(BOOK_PLACES_TAG);
-  const { data, error } = await anonClient().rpc("books_in_country", {
-    p_country_code: countryCode,
-    p_limit: BOOK_PAGE_SIZE,
-    p_offset: (page - 1) * BOOK_PAGE_SIZE,
-  });
-  if (error) throw error;
-  return toBookPage(data, page);
+  const supabase = anonClient();
+  const [books, places] = await Promise.all([
+    supabase.rpc("books_in_country", {
+      p_country_code: countryCode,
+      p_limit: BOOK_PAGE_SIZE,
+      p_offset: (page - 1) * BOOK_PAGE_SIZE,
+    }),
+    supabase.rpc("country_places", { p_country_code: countryCode, p_limit: 4 }),
+  ]);
+  if (books.error) throw books.error;
+  if (places.error) throw places.error;
+  const name = countryName(countryCode);
+  const rows = books.data.map((row) => ({
+    ...row,
+    // Up to two places, else the country itself.
+    setting: row.places.length
+      ? row.places.slice(0, 2).join(", ") +
+        (row.places.length > 2 ? ` +${row.places.length - 2}` : "")
+      : `${name} · country-level`,
+  }));
+  return {
+    ...toBookPage(rows, page),
+    country: { code: countryCode, name },
+    topPlaces: places.data.map((p) => ({
+      placeId: p.place_id,
+      name: p.name,
+      bookCount: p.book_count,
+    })),
+    placeCount: Number(places.data[0]?.total ?? 0),
+  };
 }
 
 export async function getPlace(placeId: string): Promise<PlaceDetail | null> {
@@ -188,5 +219,29 @@ export async function searchPlaces(query: string): Promise<PlaceSearchResult[]> 
     lng: (row.lng as number | null) ?? null,
     lat: (row.lat as number | null) ?? null,
     bookCount: row.book_count,
+  }));
+}
+
+/** Books whose title matches (header search), books with covers first. */
+export async function searchBooks(query: string): Promise<BookSummary[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(BOOK_PLACES_TAG);
+  const pattern = `%${query.replace(/[\\%_]/g, "\\$&")}%`;
+  const { data, error } = await anonClient()
+    .from("books")
+    .select("id, ol_work_id, title, authors, first_publish_year, cover_id")
+    .ilike("title", pattern)
+    .order("cover_id", { nullsFirst: false })
+    .order("title")
+    .limit(5);
+  if (error) throw error;
+  return data.map((row) => ({
+    id: row.id,
+    olWorkId: row.ol_work_id,
+    title: row.title,
+    authors: row.authors,
+    firstPublishYear: row.first_publish_year,
+    coverId: row.cover_id,
   }));
 }

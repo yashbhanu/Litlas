@@ -18,7 +18,8 @@ const admin = createClient<Database>(
 );
 
 async function addBook(page: Page, query: string, result: RegExp) {
-  await page.getByRole("button", { name: "Add a book" }).click();
+  // The header and the shelf section both have one.
+  await page.getByRole("button", { name: "Add a book" }).first().click();
   const dialog = page.getByRole("dialog", { name: "Add a book" });
   await dialog.getByLabel("Search by title or author").fill(query);
   const results = dialog.getByRole("list", { name: "Search results" });
@@ -106,9 +107,9 @@ test.describe("personal map", () => {
     await expect(shelf.getByText("No setting yet")).toBeVisible();
 
     // Stats: 3 books read, 1 country (Ireland), 1 continent (Europe).
-    await expect(stat(page, /Books read/)).toHaveText("3");
-    await expect(stat(page, /^Country$/)).toHaveText("1");
-    await expect(stat(page, /^Continent$/)).toHaveText("1");
+    await expect(stat(page, /^books$/)).toHaveText("3");
+    await expect(stat(page, /^country$/)).toHaveText("1");
+    await expect(stat(page, /^continent$/)).toHaveText("1");
     await expect(page.getByRole("list", { name: "Top countries" })).toContainText("Ireland");
 
     // Public profile, signed out: same map and stats, read-only.
@@ -119,7 +120,7 @@ test.describe("personal map", () => {
     await expect(
       publicPage.getByRole("heading", { name: `@${username}'s reading map` }),
     ).toBeVisible();
-    await expect(stat(publicPage, /Books read/)).toHaveText("3");
+    await expect(stat(publicPage, /^books$/)).toHaveText("3");
     await expect(publicPage.getByRole("list", { name: "Books by country" })).toContainText(
       "Dublin",
     );
@@ -185,7 +186,7 @@ test.describe("map layout on a phone", () => {
     if (placeId) await admin.from("places").delete().eq("id", placeId);
   });
 
-  test("375 px: map on top, list in an expandable bottom sheet, no sideways scroll", async ({
+  test("375 px: reading map stacks below the stats, with the tab bar; no sideways scroll", async ({
     page,
     isMobile,
   }) => {
@@ -194,26 +195,46 @@ test.describe("map layout on a phone", () => {
     await page.goto(`/u/${username}`);
 
     const map = page.getByTestId("map");
-    const sheet = page.getByRole("complementary", { name: /shelf and stats/ });
     await expect(map.locator("canvas")).toBeVisible({ timeout: 20_000 });
-    await expect(sheet).toBeVisible();
+    const stats = page.getByTestId("stats");
+    const panel = page.getByRole("region", { name: /shelf and stats/ });
+    await expect(panel).toBeVisible();
 
+    const statsBox = (await stats.boundingBox())!;
     const mapBox = (await map.boundingBox())!;
-    const sheetBox = (await sheet.boundingBox())!;
-    expect(mapBox.width).toBeGreaterThanOrEqual(370);
-    expect(sheetBox.width).toBeGreaterThanOrEqual(370);
-    // Sheet sits below the map (bottom sheet, not a side panel).
-    expect(sheetBox.y).toBeGreaterThanOrEqual(mapBox.y + mapBox.height - 1);
-    expect(mapBox.height).toBeGreaterThan(200);
+    const panelBox = (await panel.boundingBox())!;
+    expect(mapBox.width).toBeGreaterThanOrEqual(330);
+    expect(mapBox.height).toBeGreaterThan(250);
+    // Phone order: stats, then the map card, then the lists.
+    expect(mapBox.y).toBeGreaterThan(statsBox.y + statsBox.height - 1);
+    expect(panelBox.y).toBeGreaterThan(mapBox.y + mapBox.height - 1);
 
-    await expect(sheet.getByRole("list", { name: "Books by country" })).toContainText(
+    await expect(panel.getByRole("list", { name: "Books by country" })).toContainText(
       "Lisbon (test)",
     );
-    await expect(stat(page, /Book read/)).toHaveText("1");
+    await expect(stat(page, /^book$/)).toHaveText("1");
+    await expect(page.getByRole("navigation", { name: "Tabs" })).toBeVisible();
 
-    // Expand the sheet, then collapse it again.
-    const toggle = sheet.getByRole("button", { name: "Expand list" });
-    await toggle.click();
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(375);
+    expect(consoleErrors).toEqual([]);
+  });
+
+  test("375 px: explore uses an expandable bottom sheet instead of a side panel", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, "Phone layout");
+    await page.goto("/explore");
+    const map = page.getByTestId("explore-map");
+    const sheet = page.getByRole("complementary", { name: "Explore books by place" });
+    await expect(map.locator("canvas")).toBeVisible({ timeout: 20_000 });
+    const mapBox = (await map.boundingBox())!;
+    const sheetBox = (await sheet.boundingBox())!;
+    expect(sheetBox.width).toBeGreaterThanOrEqual(370);
+    expect(sheetBox.y).toBeGreaterThanOrEqual(mapBox.y + mapBox.height - 1);
+
+    await sheet.getByRole("button", { name: "Expand list" }).click();
     await expect(sheet.getByRole("button", { name: "Show more map" })).toHaveAttribute(
       "aria-expanded",
       "true",
@@ -221,14 +242,8 @@ test.describe("map layout on a phone", () => {
     await expect
       .poll(async () => (await sheet.boundingBox())!.height)
       .toBeGreaterThan(sheetBox.height + 100);
-    await sheet.getByRole("button", { name: "Show more map" }).click();
-    await expect(sheet.getByRole("button", { name: "Expand list" })).toHaveAttribute(
-      "aria-expanded",
-      "false",
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      375,
     );
-
-    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(375);
-    expect(consoleErrors).toEqual([]);
   });
 });

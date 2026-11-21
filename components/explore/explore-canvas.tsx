@@ -12,7 +12,8 @@ import Map, {
   type MapLayerMouseEvent,
   type MapRef,
 } from "react-map-gl/maplibre";
-import { MAP_COLORS } from "@/components/map/maplibre-setup";
+import { MapLegend } from "@/components/map/map-legend";
+import { MAP_COLORS, tuneBasemap } from "@/components/map/maplibre-setup";
 import { apiFetch } from "@/lib/api-client";
 import type { ExplorePinProperties, ExploreResponse } from "@/lib/books/public-types";
 import { bboxContains, formatBbox, normalizeBbox, requestBbox, type Bbox } from "@/lib/geo/bbox";
@@ -171,7 +172,10 @@ export default function ExploreCanvas({
         style={{ width: "100%", height: "100%" }}
         interactiveLayerIds={["explore-clusters", "explore-pins", "countries-hit"]}
         cursor={cursor}
-        onLoad={refresh}
+        onLoad={(event) => {
+          tuneBasemap(event.target);
+          refresh();
+        }}
         onMoveEnd={onMoveEnd}
         onMouseMove={onMouseMove}
         onMouseLeave={() => {
@@ -196,13 +200,13 @@ export default function ExploreCanvas({
             id="countries-selected"
             type="fill"
             filter={["==", ["get", "iso"], selectedCountry]}
-            paint={{ "fill-color": MAP_COLORS.country, "fill-opacity": 0.25 }}
+            paint={{ "fill-color": MAP_COLORS.country, "fill-opacity": 0.75 }}
           />
           <Layer
             id="countries-hover"
             type="line"
             filter={["==", ["get", "iso"], hoveredCountry ?? ""]}
-            paint={{ "line-color": MAP_COLORS.country, "line-width": 1.5 }}
+            paint={{ "line-color": MAP_COLORS.country, "line-width": 2 }}
           />
         </Source>
 
@@ -233,7 +237,7 @@ export default function ExploreCanvas({
             filter={["has", "point_count"]}
             layout={{
               "text-field": ["to-string", ["get", "bookCount"]],
-              "text-font": ["Noto Sans Regular"],
+              "text-font": ["Noto Sans Bold"],
               "text-size": 12,
               "text-allow-overlap": true,
             }}
@@ -277,6 +281,7 @@ export default function ExploreCanvas({
           />
         </Source>
       </Map>
+      <MapLegend />
 
       <div
         aria-live="polite"

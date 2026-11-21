@@ -5,6 +5,6 @@ import Home from "@/app/page";
 describe("Home page", () => {
   it("renders the app headline", () => {
     render(<Home />);
-    expect(screen.getByRole("heading", { level: 1, name: "Literary World Map" })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: "Read around the world." })).toBeDefined();
   });
 });

@@ -187,11 +187,16 @@ isOneToOne: false
                            },
 "books_in_country":
 { Args: { "p_country_code": string,"p_limit"?: number,"p_offset"?: number }; Returns: {
-              "authors": (string)[],"cover_id": number,"first_publish_year": number,"id": string,"ol_work_id": string,"title": string,"total": number
+              "authors": (string)[],"country_level": boolean,"cover_id": number,"first_publish_year": number,"id": string,"ol_work_id": string,"places": (string)[],"title": string,"total": number
             }[]
                            },
 "consume_rate_limit":
 { Args: { "p_action": string,"p_max": number }; Returns: boolean
+                           },
+"country_places":
+{ Args: { "p_country_code": string,"p_limit"?: number }; Returns: {
+              "book_count": number,"name": string,"place_id": string,"precision": Database["public"]['Enums']["location_precision"],"total": number
+            }[]
                            },
 "explore_places":
 { Args: { "max_features"?: number,"max_lat": number,"max_lng": number,"min_lat": number,"min_lng": number }; Returns: {
