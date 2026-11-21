@@ -49,6 +49,9 @@ export async function POST(request: Request) {
     );
   }
 
+  // Seeded books may have just been enriched with Open Library metadata.
+  revalidateTag(bookTag(book.id), "max");
+
   const supabase = await createSupabaseServerClient();
   let entry;
   try {

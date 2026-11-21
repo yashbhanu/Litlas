@@ -57,14 +57,14 @@ isOneToOne: false
                   ]
                 },"books": {
                   Row: {
-                    "authors": (string)[],"cover_id": number | null,"created_at": string | null,"description": string | null,"first_publish_year": number | null,"id": string,"ol_work_id": string | null,"setting_checked_at": string | null,"title": string,"wikidata_id": string | null
+                    "authors": (string)[],"cover_id": number | null,"created_at": string | null,"description": string | null,"first_publish_year": number | null,"id": string,"metadata_checked_at": string | null,"ol_work_id": string | null,"setting_checked_at": string | null,"title": string,"wikidata_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "authors"?: (string)[],"cover_id"?: number | null,"created_at"?: string | null,"description"?: string | null,"first_publish_year"?: number | null,"id"?: string,"ol_work_id"?: string | null,"setting_checked_at"?: string | null,"title": string,"wikidata_id"?: string | null
+                    "authors"?: (string)[],"cover_id"?: number | null,"created_at"?: string | null,"description"?: string | null,"first_publish_year"?: number | null,"id"?: string,"metadata_checked_at"?: string | null,"ol_work_id"?: string | null,"setting_checked_at"?: string | null,"title": string,"wikidata_id"?: string | null
                   }
                   Update: {
-                    "authors"?: (string)[],"cover_id"?: number | null,"created_at"?: string | null,"description"?: string | null,"first_publish_year"?: number | null,"id"?: string,"ol_work_id"?: string | null,"setting_checked_at"?: string | null,"title"?: string,"wikidata_id"?: string | null
+                    "authors"?: (string)[],"cover_id"?: number | null,"created_at"?: string | null,"description"?: string | null,"first_publish_year"?: number | null,"id"?: string,"metadata_checked_at"?: string | null,"ol_work_id"?: string | null,"setting_checked_at"?: string | null,"title"?: string,"wikidata_id"?: string | null
                   }
                   Relationships: [
                     

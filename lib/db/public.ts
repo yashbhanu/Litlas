@@ -15,6 +15,7 @@ import {
 import { getPublicEnv } from "@/lib/env";
 import type { Bbox } from "@/lib/geo/bbox";
 import type { Database } from "./database.types";
+import { fetchAllPages } from "./paging";
 import { listBookPlaces } from "./places";
 
 /**
@@ -42,25 +43,28 @@ export async function explorePlaces(boxes: Bbox[]): Promise<ExploreResponse> {
   cacheTag(BOOK_PLACES_TAG);
 
   const supabase = anonClient();
-  const results = await Promise.all(
+  // Each box returns up to the cap, paged past the API's 1,000-row limit.
+  const perBox = await Promise.all(
     boxes.map(([minLng, minLat, maxLng, maxLat]) =>
-      supabase.rpc("explore_places", {
-        min_lng: minLng,
-        min_lat: minLat,
-        max_lng: maxLng,
-        max_lat: maxLat,
-        max_features: EXPLORE_MAX_FEATURES,
-      }),
+      fetchAllPages(
+        (from, to) =>
+          supabase
+            .rpc("explore_places", {
+              min_lng: minLng,
+              min_lat: minLat,
+              max_lng: maxLng,
+              max_lat: maxLat,
+              max_features: EXPLORE_MAX_FEATURES,
+            })
+            .range(from, to),
+        EXPLORE_MAX_FEATURES,
+      ),
     ),
   );
-  const rows = results.flatMap(({ data, error }) => {
-    if (error) throw error;
-    return data;
-  });
-  rows.sort((a, b) => b.book_count - a.book_count);
+  const rows = perBox.flat().sort((a, b) => b.book_count - a.book_count);
   const truncated =
     rows.length > EXPLORE_MAX_FEATURES ||
-    results.some(({ data }) => (data?.length ?? 0) >= EXPLORE_MAX_FEATURES);
+    perBox.some((boxRows) => boxRows.length >= EXPLORE_MAX_FEATURES);
 
   return {
     type: "FeatureCollection",

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fetchAllPages } from "@/lib/db/paging";
 import { adminClient, anonClient } from "./supabase";
 
 /**
@@ -150,5 +151,77 @@ describe("explore functions", () => {
         lat: -25.2,
       }),
     ]);
+  });
+});
+
+describe("paging past the API's 1,000-row limit", () => {
+  const admin = adminClient();
+  const anon = anonClient();
+  const tag = randomUUID().slice(0, 8);
+  let bookId = "";
+  let placeIds: string[] = [];
+
+  beforeAll(async () => {
+    const { data: book } = await admin
+      .from("books")
+      .insert({ title: `Many ${tag}` })
+      .select("id")
+      .single();
+    bookId = book!.id;
+    // 1,100 pins on a remote patch of the Southern Ocean.
+    const { data: places, error } = await admin
+      .from("places")
+      .insert(
+        Array.from({ length: 1100 }, (_, i) => ({
+          name: `Many ${tag} ${i}`,
+          precision: "point" as const,
+          geom: `SRID=4326;POINT(${-100 + (i % 50) * 0.01} ${-60 + Math.floor(i / 50) * 0.01})`,
+        })),
+      )
+      .select("id");
+    expect(error).toBeNull();
+    placeIds = places!.map((p) => p.id);
+    const { error: linkError } = await admin.from("book_places").insert(
+      placeIds.map((id) => ({
+        book_id: bookId,
+        place_id: id,
+        source: "admin" as const,
+        status: "approved" as const,
+      })),
+    );
+    expect(linkError).toBeNull();
+  });
+
+  afterAll(async () => {
+    if (bookId) await admin.from("books").delete().eq("id", bookId);
+    for (let i = 0; i < placeIds.length; i += 500) {
+      await admin
+        .from("places")
+        .delete()
+        .in("id", placeIds.slice(i, i + 500));
+    }
+  });
+
+  const box = { min_lng: -100.5, min_lat: -60.5, max_lng: -99, max_lat: -59 };
+
+  it("a plain call is silently capped at 1,000 rows", async () => {
+    const { data } = await anon.rpc("explore_places", box);
+    expect(data).toHaveLength(1000);
+  });
+
+  it("fetchAllPages gets every row, in stable order, up to a max", async () => {
+    const all = await fetchAllPages((from, to) => anon.rpc("explore_places", box).range(from, to));
+    expect(all).toHaveLength(1100);
+    expect(new Set(all.map((row) => row.place_id)).size).toBe(1100);
+    const capped = await fetchAllPages(
+      (from, to) => anon.rpc("explore_places", box).range(from, to),
+      1050,
+    );
+    expect(capped).toHaveLength(1050);
+
+    const coords = await fetchAllPages((from, to) =>
+      anon.rpc("book_place_coords", { p_book_ids: [bookId] }).range(from, to),
+    );
+    expect(new Set(coords.map((row) => row.place_id)).size).toBe(1100);
   });
 });

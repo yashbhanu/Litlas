@@ -16,6 +16,7 @@ import { join } from "node:path";
 import { parseArgs } from "node:util";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db/database.types";
+import { fetchAllPages } from "@/lib/db/paging";
 import { ExternalApiError, fetchJson } from "@/lib/external/http";
 import { createOpenLibraryClient } from "@/lib/external/openlibrary";
 import { sparqlResponseSchema, type Binding } from "@/lib/external/wikidata";
@@ -316,14 +317,18 @@ async function insertLinks(
 
 async function backfillCovers(admin: Admin) {
   const openLibrary = createOpenLibraryClient({ userAgent });
-  const { data: books, error } = await admin
-    .from("books")
-    .select("id, ol_work_id")
-    .not("ol_work_id", "is", null)
-    .is("cover_id", null)
-    .order("created_at")
-    .limit(Number.isFinite(limit) ? limit : 100_000);
-  if (error) throw error;
+  const books = await fetchAllPages(
+    (from, to) =>
+      admin
+        .from("books")
+        .select("id, ol_work_id")
+        .not("ol_work_id", "is", null)
+        .is("cover_id", null)
+        .order("created_at")
+        .order("id")
+        .range(from, to),
+    limit,
+  );
   log(`Cover backfill: ${books.length} books with an Open Library id and no cover (1 req/s)`);
 
   let found = 0;

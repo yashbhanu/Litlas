@@ -181,3 +181,43 @@ as $$
 $$;
 
 grant execute on function place_detail(uuid) to anon, authenticated;
+
+-- book_place_coords: add a unique tiebreaker so callers can page past the API's
+-- 1,000-row limit with stable results (two places can share a name).
+create or replace function book_place_coords(p_book_ids uuid[])
+returns table (
+  book_id uuid,
+  place_id uuid,
+  name text,
+  "precision" location_precision,
+  country_code text,
+  source location_source,
+  lng double precision,
+  lat double precision
+)
+language sql
+stable
+security invoker
+set search_path = ''
+as $$
+  select
+    bp.book_id,
+    p.id,
+    p.name,
+    p.precision,
+    p.country_code::text,
+    bp.source,
+    extensions.st_x(p.geom::extensions.geometry),
+    extensions.st_y(p.geom::extensions.geometry)
+  from public.book_places bp
+  join public.places p on p.id = bp.place_id
+  where bp.book_id = any (p_book_ids)
+    and bp.status = 'approved'
+  order by bp.book_id, p.name, p.id;
+$$;
+
+-- When the book's Open Library metadata (cover, description, year, authors) was last
+-- fetched. Seeded books start null and are enriched the first time a reader adds them.
+alter table books add column metadata_checked_at timestamptz;
+-- Books readers already added were created from Open Library metadata.
+update books set metadata_checked_at = created_at where description is not null or cover_id is not null;
