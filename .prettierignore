@@ -1,0 +1,11 @@
+.next
+node_modules
+pnpm-lock.yaml
+supabase/.temp
+supabase/.branches
+data/seed
+playwright-report
+test-results
+coverage
+lib/db/database.types.ts
+SPEC.md

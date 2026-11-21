@@ -1,0 +1,18 @@
+{
+  "numFound": 1,
+  "start": 0,
+  "numFoundExact": true,
+  "num_found": 1,
+  "documentation_url": "https://openlibrary.org/dev/docs/api/search",
+  "q": "key:\"/works/OL86318W\"",
+  "offset": null,
+  "docs": [
+    {
+      "author_name": ["James Joyce"],
+      "cover_i": 13136548,
+      "first_publish_year": 1914,
+      "key": "/works/OL86318W",
+      "title": "Ulysses"
+    }
+  ]
+}

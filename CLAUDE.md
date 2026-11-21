@@ -1,0 +1,130 @@
+# Literary World Map — guide for Claude Code
+
+`SPEC.md` is the source of truth. Read the relevant section before changing anything. This file summarizes it.
+
+A free web app where readers log books, and each book shows up as a pin where its story is set. Users get a personal "read around the world" map, a public explore map and crowdsourced settings. Free tiers only. No AI features, payments or native app in v1.
+
+@AGENTS.md
+
+## Working agreement
+
+- Work **one build phase at a time** (see SPEC.md → Build phases). Plan first, build, verify that phase's acceptance criteria, then stop.
+- **Do not create git commits** unless the user explicitly asks for one. (This overrides the spec's "commit after each task".)
+- This is **Next.js 16** and differs from older versions. Check `node_modules/next/dist/docs/` before using Next APIs. `cacheComponents` is enabled in `next.config.ts`.
+
+## Stack
+
+| Layer          | Choice                                                                                      |
+| -------------- | ------------------------------------------------------------------------------------------- |
+| Framework      | Next.js App Router + TypeScript strict; server components for pages, route handlers for API |
+| Styling        | Tailwind CSS v4 + shadcn/ui (base-ui primitives, `cn` package), light/dark via next-themes  |
+| Map            | MapLibre GL JS via `react-map-gl/maplibre` (clustering); OpenFreeMap tiles                  |
+| Country shapes | Natural Earth admin-0, simplified → `public/geo/countries.geojson`                          |
+| DB / Auth      | Supabase Postgres + PostGIS, RLS; Supabase Auth (magic link + Google)                       |
+| Data access    | Supabase JS + generated types (`lib/db/database.types.ts`)                                  |
+| Validation     | Zod (v4) for all API inputs, external responses and env                                     |
+| Client data    | TanStack Query                                                                              |
+| External APIs  | Open Library (search/works/covers), Wikidata SPARQL, Photon geocoding                       |
+| Share images   | `next/og` ImageResponse                                                                     |
+| Hosting        | Vercel Hobby; optional Vercel Cron / GitHub Actions                                         |
+| Testing        | Vitest (unit, jsdom), Playwright (e2e)                                                      |
+| Lint/format    | ESLint (flat config, next + prettier) + Prettier (tailwind plugin)                          |
+
+Package manager is **pnpm**. The Supabase CLI is a dev dependency, so run it with `pnpm exec supabase …`. Local Supabase needs Docker.
+
+## Commands
+
+```bash
+pnpm dev            # Next dev server (http://localhost:3000)
+pnpm lint           # ESLint
+pnpm format         # Prettier write (format:check in CI)
+pnpm typecheck      # next typegen + tsc --noEmit
+pnpm test           # Vitest unit tests (tests/unit), no network or DB
+pnpm test:integration  # Vitest against local Supabase (tests/integration): RLS policies
+pnpm test:e2e       # Playwright (tests/e2e), starts dev server itself; needs local Supabase
+pnpm db:start       # Start local Supabase (applies migrations)
+pnpm db:stop        # Stop it. Restart after editing supabase/config.toml (auth config is read at start)
+pnpm db:reset       # Re-apply all migrations + supabase/seed.sql
+pnpm db:types       # Regenerate lib/db/database.types.ts from local DB
+```
+
+CI (`.github/workflows/ci.yml`):
+
+- Job 1 runs lint, format check, typecheck and unit tests.
+- Job 2 starts local Supabase, checks the generated types are current, then runs the integration and e2e tests.
+
+Local auth emails (magic links) are captured by Mailpit at http://127.0.0.1:54324. The e2e tests read them through its API.
+
+## Environment
+
+See `.env.example`. Copy it to `.env.local`.
+
+- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_MAP_STYLE_URL`, `NEXT_PUBLIC_SITE_URL`: public. Read them with `getPublicEnv()` from `lib/env.ts`.
+- `SUPABASE_SERVICE_ROLE_KEY`, `APP_USER_AGENT`: server only. Read them with `getServerEnv()` from `lib/env.server.ts` (`server-only`).
+- Schemas live in `lib/validation/env.ts`.
+- `NEXT_PUBLIC_AUTH_GOOGLE_ENABLED=true` shows the Google button on `/login`. Only set it once the Google provider is configured in Supabase. For local setup, see the comment above `[auth.external.google]` in `supabase/config.toml`.
+
+## Folder structure
+
+```
+app/                  routes (pages + api route handlers)
+components/           UI components (map/, books/, ui/ ← shadcn)
+proxy.ts              session refresh + signed-out redirects (Next 16's name for middleware)
+lib/
+  external/           http.ts (fetchJson: UA, retry, Zod), openlibrary.ts (pure, testable client),
+                      openlibrary.server.ts (default instance + `use cache` search)
+  db/                 server.ts (user client, RLS), admin.ts (service role), browser.ts, proxy.ts,
+                      books.ts / shelf.ts (typed queries), database.types.ts (generated)
+  geo/                precision rules, continent lookup, GeoJSON builders
+  validation/         zod schemas (env, books, shelf, profile, auth)
+  books/              client-safe helpers/types (cover URLs, ShelfEntry)
+  auth.ts             getSessionUser() / getProfile() (server-only, per-request cached)
+  api.ts              apiError(), parseJsonBody() for route handlers
+  api-client.ts       apiFetch() + ApiRequestError for client components
+hooks/                client hooks
+supabase/migrations/  SQL migrations (only way to change the DB)
+scripts/              seed-wikidata.ts
+tests/unit/           Vitest (*.test.ts[x]); fixtures-backed, server-only is stubbed
+tests/integration/    Vitest against local Supabase (RLS)
+tests/e2e/            Playwright (*.spec.ts)
+tests/fixtures/       recorded external API responses
+public/geo/           countries.geojson
+data/seed/            raw Wikidata dumps from the seed script (Phase 3)
+```
+
+## Codebase rules
+
+- TypeScript strict. **No `any`** (ESLint enforces this as an error).
+- Server-only code (service role key, external API clients) imports `server-only` and is never imported into client components.
+- Every API route validates input with Zod and returns typed JSON errors shaped `{ error: { code, message } }`.
+- External calls happen **server-side only** in `lib/external/*`. They send the `APP_USER_AGENT` header, validate responses with Zod, and cache results in the DB (re-check a book's setting after 90 days). Never call external APIs from the browser.
+- Serialize Wikidata calls and retry with exponential backoff on 429/5xx. Debounce Photon by 300 ms with a 3-character minimum, proxied through our API.
+- External clients are wrapped so tests can mock them. Unit tests use recorded fixtures, never live calls.
+- DB changes go **only through migrations** in `supabase/migrations/`. Run `pnpm db:types` after each one.
+- PostGIS lives in the `extensions` schema (Supabase convention).
+- `profiles` uses column-level grants: clients may select only `id, username, display_name, is_public, created_at` and can never read or write `is_admin`. **Always select explicit columns from `profiles`, because `select('*')` is denied.** Admin checks use the service-role client.
+- Use the user client (`createSupabaseServerClient`) for user data so RLS applies. The service-role client (`createSupabaseAdminClient`) is only for server-owned writes (books, places, admin actions).
+- With Cache Components, anything that reads the session must sit inside `<Suspense>`. `createSupabaseServerClient()` calls `await connection()`, because supabase-js reads the clock and must not run during prerendering.
+- Private profiles: username and display name stay publicly visible, but the shelf/map is hidden by RLS.
+- Accessibility: keyboard navigable, visible focus, alt text on covers, and a list view alongside every map.
+- Attribution: Open Library and Wikidata in the footer and on book pages, OpenStreetMap on maps.
+- Use `components/books/book-cover.tsx` for covers (`next/image`, `unoptimized` to stay inside the Vercel Hobby image quota, with a placeholder when missing).
+- Client components talk to our API with TanStack Query + `apiFetch`. After a mutation that changes server-rendered data, call `router.refresh()`.
+
+## Domain rules (quick reference)
+
+- Precision enum: `point | city | region | country | fictional`.
+  - point/city → pin
+  - region/country → shaded area
+  - fictional → not on the map, listed under "Fictional settings"
+- A book with several settings gets several pins, linked on hover.
+- Crowdsourced locations: a pending `book_places` row is approved at `APPROVAL_THRESHOLD = 3` votes, or by an admin. This is a Postgres function called after each vote.
+- Stats on every map: books read, distinct countries, distinct continents (static country→continent lookup), top 5 countries.
+- Rate limits for write routes use a Postgres counter table (e.g. 30 suggestions/day).
+- Wikidata class IDs (fictional location, country, city, literary work) must be verified before hard-coding. Keep them in one constants file.
+
+## Testing priorities
+
+- Unit: Wikidata parsing and precision classification, GeoJSON builders, stats, approval function.
+- Integration: RLS policies against local Supabase.
+- E2E: sign up, add a book, see a pin, suggest a location, view a public profile.

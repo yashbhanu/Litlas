@@ -1,0 +1,81 @@
+{
+  "numFound": 7647,
+  "start": 0,
+  "numFoundExact": true,
+  "num_found": 7647,
+  "documentation_url": "https://openlibrary.org/dev/docs/api/search",
+  "q": "ulysses",
+  "offset": null,
+  "docs": [
+    {
+      "author_name": ["James Joyce"],
+      "cover_i": 13136548,
+      "first_publish_year": 1914,
+      "key": "/works/OL86318W",
+      "title": "Ulysses"
+    },
+    {
+      "author_name": ["Kate DiCamillo"],
+      "cover_i": 7269799,
+      "first_publish_year": 2013,
+      "key": "/works/OL16811465W",
+      "title": "Flora & Ulysses"
+    },
+    {
+      "author_name": ["Pierdomenico Baccalario"],
+      "cover_i": 2815444,
+      "first_publish_year": 2005,
+      "key": "/works/OL4856565W",
+      "title": "The Door to Time (Ulysses Moore #1)"
+    },
+    {
+      "author_name": ["Alistair MacLean"],
+      "cover_i": 11645475,
+      "first_publish_year": 1955,
+      "key": "/works/OL5034441W",
+      "title": "H.M.S. Ulysses"
+    },
+    {
+      "author_name": ["Stuart Gilbert"],
+      "cover_i": 254011,
+      "first_publish_year": 1930,
+      "key": "/works/OL4304243W",
+      "title": "James Joyce's Ulysses"
+    },
+    {
+      "author_name": ["Ulysses S. Grant"],
+      "cover_i": 8244582,
+      "first_publish_year": 1885,
+      "key": "/works/OL1928237W",
+      "title": "Personal Memoirs of U. S. Grant"
+    },
+    {
+      "author_name": ["James Joyce"],
+      "cover_i": 14580420,
+      "first_publish_year": 2014,
+      "key": "/works/OL31670207W",
+      "title": "Ulysses"
+    },
+    {
+      "author_name": ["François de Salignac de La Mothe-Fénelon"],
+      "cover_i": 8242949,
+      "first_publish_year": 1699,
+      "key": "/works/OL781469W",
+      "title": "Aventures de Télémaque"
+    },
+    {
+      "author_name": ["Ulysses S. Grant"],
+      "cover_i": 14846987,
+      "first_publish_year": 1894,
+      "key": "/works/OL1928235W",
+      "title": "Personal Memoirs of U. S. Grant (2 volumes in 1)"
+    },
+    {
+      "author_name": ["Don Gifford"],
+      "cover_i": 324509,
+      "first_publish_year": 1988,
+      "key": "/works/OL4482598W",
+      "title": "Ulysses annotated"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+-- Local dev seed data (applied by `pnpm db:reset`). Intentionally empty for now.
