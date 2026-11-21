@@ -1,0 +1,115 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 7426387,
+        "osm_key": "place",
+        "osm_value": "city",
+        "type": "city",
+        "name": "Bogota",
+        "state": "Bogota, Capital District",
+        "country": "Colombia",
+        "countrycode": "CO",
+        "extra": {
+          "admin_level": "7"
+        },
+        "extent": [-74.2235137, 4.8332542, -74.0101412, 4.465596]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0836331, 4.6533817]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 170590,
+        "osm_key": "place",
+        "osm_value": "village",
+        "type": "city",
+        "name": "Bogota",
+        "county": "Bergen",
+        "state": "New Jersey",
+        "country": "United States",
+        "postcode": "07603",
+        "countrycode": "US",
+        "extra": {
+          "admin_level": "8"
+        },
+        "extent": [-74.039786, 40.884637, -74.020786, 40.865573]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0298621, 40.8762106]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 12893646,
+        "osm_key": "boundary",
+        "osm_value": "administrative",
+        "type": "state",
+        "name": "Bogota, Capital District",
+        "country": "Colombia",
+        "countrycode": "CO",
+        "extra": {
+          "admin_level": "4"
+        },
+        "extent": [-74.4509502, 4.8369805, -73.9859033, 3.7300533]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.1753606, 4.2834715]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 18335978,
+        "osm_key": "natural",
+        "osm_value": "mountain_range",
+        "type": "other",
+        "name": "Bogota",
+        "city": "Slansk\u00e9 Nov\u00e9 Mesto",
+        "county": "Ko\u0161ice-okolie District",
+        "state": "Region of Ko\u0161ice",
+        "country": "Slovakia",
+        "countrycode": "SK",
+        "extent": [21.4453988, 48.7405926, 21.5824587, 48.644943]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [21.5156135, 48.6927898]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 1387968,
+        "osm_key": "boundary",
+        "osm_value": "administrative",
+        "type": "other",
+        "name": "Bogota Capital District - Municipality",
+        "state": "Bogota, Capital District",
+        "country": "Colombia",
+        "countrycode": "CO",
+        "extra": {
+          "admin_level": "6"
+        },
+        "extent": [-74.4509502, 4.8369805, -73.9859033, 3.7300533]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.1753606, 4.2834715]
+      }
+    }
+  ]
+}

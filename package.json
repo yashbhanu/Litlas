@@ -20,7 +20,8 @@
     "test:integration": "vitest run --config vitest.integration.config.mts",
     "postinstall": "node scripts/copy-maplibre-worker.mjs",
     "countries:build": "node scripts/build-countries.ts",
-    "seed": "tsx --conditions=react-server scripts/seed-wikidata.ts"
+    "seed": "tsx --conditions=react-server scripts/seed-wikidata.ts",
+    "admin:grant": "tsx scripts/grant-admin.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

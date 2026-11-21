@@ -24,9 +24,10 @@ export function AddBookFlow({ onAdded, onDone }: { onAdded: () => void; onDone: 
   if (step.name === "prompt") {
     return (
       <SettingPrompt
+        bookId={step.result.entry.book.id}
         title={step.result.entry.book.title}
         lookupFailed={step.result.settingLookupFailed}
-        onSkip={onDone}
+        onDone={onDone}
       />
     );
   }

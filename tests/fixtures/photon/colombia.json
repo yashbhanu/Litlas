@@ -1,0 +1,112 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 120027,
+        "osm_key": "place",
+        "osm_value": "country",
+        "type": "country",
+        "name": "Colombia",
+        "country": "Colombia",
+        "countrycode": "CO",
+        "extra": {
+          "admin_level": "2"
+        },
+        "extent": [-82.1243611, 16.0495518, -66.8511118, -4.2280906]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-72.9088133, 4.099917]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "N",
+        "osm_id": 5302030275,
+        "osm_key": "railway",
+        "osm_value": "station",
+        "type": "house",
+        "name": "Colombia",
+        "street": "Calle de Colombia",
+        "locality": "Hispanoam\u00e9rica",
+        "district": "Chamart\u00edn",
+        "city": "Madrid",
+        "state": "Community of Madrid",
+        "country": "Spain",
+        "postcode": "28016",
+        "countrycode": "ES"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.6769611, 40.4571156]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "N",
+        "osm_id": 703168314,
+        "osm_key": "place",
+        "osm_value": "town",
+        "type": "city",
+        "name": "Colombia",
+        "county": "Colombia",
+        "state": "Huila",
+        "country": "Colombia",
+        "countrycode": "CO"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.8019303, 3.3758991]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 5901288,
+        "osm_key": "place",
+        "osm_value": "municipality",
+        "type": "city",
+        "name": "Colombia",
+        "state": "Las Tunas",
+        "country": "Cuba",
+        "countrycode": "CU",
+        "extra": {
+          "admin_level": "6"
+        },
+        "extent": [-77.53541, 21.0835391, -77.3260753, 20.6805578]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-77.4252381, 20.9842172]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 4047593,
+        "osm_key": "boundary",
+        "osm_value": "administrative",
+        "type": "county",
+        "name": "Colombia",
+        "state": "Huila",
+        "country": "Colombia",
+        "countrycode": "CO",
+        "extra": {
+          "admin_level": "6"
+        },
+        "extent": [-74.9094177, 3.8448472, -74.411663, 3.0076846]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.7007224, 3.4261052]
+      }
+    }
+  ]
+}

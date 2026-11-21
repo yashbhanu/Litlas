@@ -49,6 +49,7 @@ pnpm db:types       # Regenerate lib/db/database.types.ts from local DB
 pnpm countries:build   # Rebuild public/geo/countries.geojson + lib/geo/country-bounds.json (Natural Earth)
 pnpm seed --dry-run [--limit N]   # Wikidata seed import: fetch + normalize + log counts, no writes
 pnpm seed [--covers] [--refresh]  # Write to the DB in .env.local; --env <file> --yes for a non-local DB
+pnpm admin:grant <username> [--revoke]  # Make a user a moderator (service role); --env/--yes as above
 ```
 
 The seed (`scripts/seed-wikidata.ts`, pure logic in `lib/seed/wikidata-seed.ts`) splits the spec's single query, which times out on WDQS:
@@ -86,6 +87,7 @@ components/           UI components (map/, books/, ui/ ← shadcn)
 proxy.ts              session refresh + signed-out redirects (Next 16's name for middleware)
 lib/
   external/           http.ts (fetchJson: UA, retry, Zod), openlibrary.ts (pure, testable client),
+                      photon.ts / photon.server.ts (place autocomplete, `use cache`),
                       openlibrary.server.ts (default instance + `use cache` search),
                       wikidata.ts (SPARQL client: serialized queue, parsing, classification),
                       wikidata.server.ts (process-wide instance), wikidata-constants.ts (verified P/Q ids)
@@ -94,6 +96,7 @@ lib/
                       public.ts (cookie-less anon client + `use cache` reads for explore/book/place pages),
                       settings.ts (Wikidata setting lookup + cache writes), database.types.ts (generated)
   seed/               wikidata-seed.ts (seed queries + normalization, pure)
+  locations/          constants (threshold, rate limits), types, route error mapping
   geo/                precision.ts (rules + classifyPlace), continents.ts (ISO → continent, names),
                       bbox.ts (antimeridian split, padded/snapped request boxes),
                       map.ts (pins GeoJSON, stats, list view, mapBounds), country-bounds.json (generated)
@@ -140,7 +143,15 @@ data/seed/            raw Wikidata dumps from the seed script (Phase 3)
   - region/country → shaded area. We only ship country shapes, so a region shades its whole country.
   - fictional → not on the map, listed under "Fictional settings"
 - A book with several settings gets several pins, linked on hover.
-- Crowdsourced locations: a pending `book_places` row is approved at `APPROVAL_THRESHOLD = 3` votes, or by an admin. This is a Postgres function called after each vote.
+- Crowdsourced locations: a pending `book_places` row is approved at `APPROVAL_THRESHOLD = 3` votes, or by an admin.
+  - Approval is the Postgres function `apply_location_approval`, run by a trigger after each vote insert. SQL `approval_threshold()` mirrors `lib/locations/constants.ts`, and a test checks they match.
+  - The suggester's own vote counts: the server records it with the service role when they suggest. So 2 other readers are needed.
+  - RLS on `location_votes` stops voting on your own suggestion, voting twice (primary key), voting as someone else, and voting on non-pending links.
+  - Pending suggestions are publicly readable so others can confirm them. This deliberately deviates from the spec's "own pending only". Rejected ones are visible only to their suggester.
+  - Maps and Explore only ever use approved links.
+  - Suggestions reuse existing places: a country by ISO code (preferring the Wikidata row), a real place by OSM ID and precision, a fictional place by name.
+  - Moderation (`/moderate`, `POST /api/admin/locations/[id]`) uses the service role. Merge is the SQL `merge_places`, which moves links and votes, then deletes the duplicate.
+  - After approval, rejection or merge, call `revalidateBookPlaces(bookId)` (`lib/db/revalidate.ts`).
 - Stats on every map: books read, distinct countries, distinct continents (static country→continent lookup), top 5 countries.
 - Personal/public maps and stats cover shelf entries with status `read`. The shelf list shows every status, each with its setting summary.
 - Setting lookup runs inside `POST /api/shelf` (`ensureBookSettings`). A Wikidata failure doesn't block adding the book; `setting_checked_at` stays null so it retries. Places come back through the `book_place_coords(uuid[])` SQL function (security invoker, approved links only, plain lng/lat).
@@ -151,7 +162,10 @@ data/seed/            raw Wikidata dumps from the seed script (Phase 3)
 - Public reads (`lib/db/public.ts`) are cached with tags `book-places` and `book:<id>`. Call `revalidateTag(tag, "max")` after changing book↔place links. `POST /api/shelf` does this after a setting lookup.
 - `POST /api/shelf` accepts `{ olWorkId }` (search results) or `{ bookId }` (known books, since seeded books may lack an Open Library ID).
 - `/book/[id]` and `/place/[id]`: `proxy.ts` 404s malformed IDs. With Cache Components, unknown valid IDs render not-found with `noindex`, but the status stays 200 because streaming has already started.
-- Rate limits for write routes use a Postgres counter table (e.g. 30 suggestions/day).
+- Rate limits for write routes use the Postgres counter table `rate_limits` via `consume_rate_limit()` (`lib/db/rate-limit.ts`).
+  - Limits are in `RATE_LIMITS`: 30 suggestions, 100 votes and 300 shelf writes per day.
+  - Over the limit, the API returns 429 `rate_limited`.
+- The Supabase API caps responses at 1,000 rows (`max_rows`). Page larger reads with `fetchAllPages` (`lib/db/paging.ts`).
 - Wikidata class IDs (fictional location, country, city, literary work) must be verified before hard-coding. Keep them in one constants file.
 
 ## Testing priorities

@@ -7,6 +7,7 @@ export type ApiErrorCode =
   | "not_found"
   | "conflict"
   | "profile_required"
+  | "rate_limited"
   | "upstream_error"
   | "internal_error";
 
@@ -21,6 +22,7 @@ const STATUS: Record<ApiErrorCode, number> = {
   not_found: 404,
   conflict: 409,
   profile_required: 403,
+  rate_limited: 429,
   upstream_error: 502,
   internal_error: 500,
 };
@@ -55,6 +57,7 @@ export async function parseJsonBody<S extends z.ZodType>(
 
 /** Postgres error codes we map to API errors. */
 export const PG = {
+  insufficientPrivilege: "42501",
   uniqueViolation: "23505",
   foreignKeyViolation: "23503",
 } as const;

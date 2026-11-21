@@ -1,21 +1,27 @@
 "use client";
 
 import { MapPinOffIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { PlacePicker } from "@/components/locations/place-picker";
+import { SuggestionThanks } from "@/components/locations/suggestion-thanks";
+import type { SuggestLocationResponse } from "@/lib/locations/types";
 
-/**
- * Shown after adding a book with no known setting. Phase 4 adds the PlacePicker here so
- * readers can suggest one; for now the reader can only skip.
- */
+/** Shown after adding a book with no known setting: suggest one, or skip. */
 export function SettingPrompt({
+  bookId,
   title,
   lookupFailed,
-  onSkip,
+  onDone,
 }: {
+  bookId: string;
   title: string;
   lookupFailed: boolean;
-  onSkip: () => void;
+  onDone: () => void;
 }) {
+  const [result, setResult] = useState<SuggestLocationResponse | null>(null);
+
+  if (result) return <SuggestionThanks result={result} onDone={onDone} />;
+
   return (
     <section aria-labelledby="setting-prompt-heading" className="space-y-4">
       <div className="flex items-start gap-3">
@@ -26,17 +32,12 @@ export function SettingPrompt({
           </h3>
           <p className="text-sm text-muted-foreground">
             {lookupFailed
-              ? `We added “${title}” to your shelf, but couldn't reach Wikidata to find its setting. We'll try again next time.`
-              : `We added “${title}” to your shelf, but couldn't find where it's set on Wikidata.`}{" "}
-            Suggesting a location is coming soon.
+              ? `We added “${title}” to your shelf, but couldn't reach Wikidata to find its setting. You can suggest one now.`
+              : `We added “${title}” to your shelf, but couldn't find where it's set. Help other readers by suggesting a location.`}
           </p>
         </div>
       </div>
-      <div className="flex justify-end">
-        <Button type="button" onClick={onSkip} autoFocus>
-          Skip for now
-        </Button>
-      </div>
+      <PlacePicker bookId={bookId} onSuggested={setResult} onSkip={onDone} />
     </section>
   );
 }

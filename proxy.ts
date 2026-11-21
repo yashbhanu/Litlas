@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/db/proxy";
 
 /** Routes that need a signed-in user. Pages re-check on the server; this is the fast path. */
-const PROTECTED_PREFIXES = ["/me", "/add", "/onboarding", "/settings"];
+const PROTECTED_PREFIXES = ["/me", "/add", "/onboarding", "/settings", "/moderate"];
 
 /** /book/<id> and /place/<id> take a UUID; anything else is a 404 before rendering. */
 const ID_ROUTE = /^\/(book|place)\/([^/]+)\/?$/;

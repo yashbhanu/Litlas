@@ -1,0 +1,112 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 8484939,
+        "osm_key": "boundary",
+        "osm_value": "traditional",
+        "type": "other",
+        "name": "Yorkshire",
+        "state": "England",
+        "country": "United Kingdom",
+        "countrycode": "GB",
+        "extent": [-2.6508333, 54.6635414, 0.1498318, 53.3015483]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.38525, 53.9825271]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 183334,
+        "osm_key": "place",
+        "osm_value": "village",
+        "type": "city",
+        "name": "Yorkshire",
+        "county": "Darke",
+        "state": "Ohio",
+        "country": "United States",
+        "countrycode": "US",
+        "extra": {
+          "admin_level": "8"
+        },
+        "extent": [-84.500595, 40.328833, -84.489276, 40.321537]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-84.4953064, 40.3252173]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 13620480,
+        "osm_key": "place",
+        "osm_value": "village",
+        "type": "city",
+        "name": "Yorkshire",
+        "county": "Cattaraugus",
+        "state": "New York",
+        "country": "United States",
+        "countrycode": "US",
+        "extra": {
+          "admin_level": "7"
+        },
+        "extent": [-78.584135, 42.536365, -78.445122, 42.44388]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-78.4727976, 42.5300624]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 175817,
+        "osm_key": "boundary",
+        "osm_value": "census",
+        "type": "other",
+        "name": "Yorkshire",
+        "city": "Yorkshire",
+        "county": "Cattaraugus",
+        "state": "New York",
+        "country": "United States",
+        "postcode": "14173",
+        "countrycode": "US",
+        "extent": [-78.493015, 42.536365, -78.461603, 42.511704]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-78.477971, 42.523669]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "N",
+        "osm_id": 158599494,
+        "osm_key": "place",
+        "osm_value": "village",
+        "type": "city",
+        "name": "Yorkshire",
+        "county": "Prince William",
+        "state": "Virginia",
+        "country": "United States",
+        "postcode": "20111",
+        "countrycode": "US"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-77.4479432, 38.7930988]
+      }
+    }
+  ]
+}

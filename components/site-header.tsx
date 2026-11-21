@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getProfile, getSessionUser } from "@/lib/auth";
+import { createSupabaseAdminClient } from "@/lib/db/admin";
+import { isAdmin } from "@/lib/db/locations";
 
 export function SiteHeader() {
   return (
@@ -35,8 +37,14 @@ async function UserNav() {
   }
 
   const profile = await getProfile(user.id);
+  const admin = profile ? await isAdmin(createSupabaseAdminClient(), user.id) : false;
   return (
     <nav aria-label="Account" className="flex items-center gap-2">
+      {admin ? (
+        <Link href="/moderate" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+          Moderate
+        </Link>
+      ) : null}
       {profile ? (
         <Link href="/me" className={buttonVariants({ variant: "ghost", size: "sm" })}>
           My map

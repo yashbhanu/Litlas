@@ -1,12 +1,11 @@
-import { MapPinPlusIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AddToShelfButton } from "@/components/books/add-to-shelf-button";
 import { BookCover } from "@/components/books/book-cover";
+import { BookSuggestions } from "@/components/locations/book-suggestions";
 import { MapView } from "@/components/map/map-view";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getBookDetail } from "@/lib/db/public";
 import { countryName } from "@/lib/geo/continents";
@@ -84,10 +83,6 @@ async function BookContent({ params }: { params: PageProps<"/book/[id]">["params
           <h2 id="settings-heading" className="text-xl font-semibold">
             Where it&apos;s set
           </h2>
-          <Button variant="outline" size="sm" disabled title="Coming soon">
-            <MapPinPlusIcon aria-hidden />
-            Suggest a location (coming soon)
-          </Button>
         </div>
 
         {real.length > 0 ? (
@@ -142,6 +137,8 @@ async function BookContent({ params }: { params: PageProps<"/book/[id]">["params
             </ul>
           </div>
         ) : null}
+
+        <BookSuggestions bookId={book.id} bookTitle={book.title} />
       </section>
 
       <footer className="border-t pt-4 text-xs text-muted-foreground">

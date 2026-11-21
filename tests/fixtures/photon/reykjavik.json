@@ -1,0 +1,118 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "R",
+        "osm_id": 2580605,
+        "osm_key": "place",
+        "osm_value": "city",
+        "type": "city",
+        "name": "Reykjavik",
+        "county": "Capital Region",
+        "country": "Iceland",
+        "countrycode": "IS",
+        "extra": {
+          "admin_level": "6"
+        },
+        "extent": [-21.9838299, 64.3153711, -21.4019991, 64.0404021]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-21.9422367, 64.145981]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "N",
+        "osm_id": 1542884949,
+        "osm_key": "place",
+        "osm_value": "locality",
+        "type": "locality",
+        "name": "Reykjavik",
+        "county": "Rural Municipality of Alonsa",
+        "state": "Manitoba",
+        "country": "Canada",
+        "countrycode": "CA"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-98.8984689, 51.19814]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "N",
+        "osm_id": 9778669706,
+        "osm_key": "shop",
+        "osm_value": "clothes",
+        "type": "house",
+        "housenumber": "11",
+        "name": "Reykjavik",
+        "street": "Paradiesstra\u00dfe",
+        "district": "Altstadt",
+        "city": "Constance",
+        "county": "Landkreis Konstanz",
+        "state": "Baden-W\u00fcrttemberg",
+        "country": "Germany",
+        "postcode": "78462",
+        "countrycode": "DE"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [9.1725567, 47.6610381]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "N",
+        "osm_id": 2732913221,
+        "osm_key": "shop",
+        "osm_value": "clothes",
+        "type": "house",
+        "housenumber": "57",
+        "name": "Reykjavik",
+        "street": "Hoofdstraat",
+        "locality": "Haveltermade",
+        "district": "Meppel",
+        "city": "Meppel",
+        "state": "Drenthe",
+        "country": "Netherlands",
+        "postcode": "7941 AC",
+        "countrycode": "NL"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [6.1906772, 52.6974379]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "W",
+        "osm_id": 52278395,
+        "osm_key": "aeroway",
+        "osm_value": "aerodrome",
+        "type": "house",
+        "name": "Reykjavik Airport",
+        "street": "Skildinganes",
+        "locality": "Skerjafj\u00f6r\u00f0ur",
+        "district": "Vesturb\u00e6r",
+        "city": "Reykjavik",
+        "county": "Capital Region",
+        "country": "Iceland",
+        "postcode": "102",
+        "countrycode": "IS",
+        "extent": [-21.9586715, 64.1382208, -21.9288719, 64.1205381]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-21.9409445, 64.129393]
+      }
+    }
+  ]
+}

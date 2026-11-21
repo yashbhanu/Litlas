@@ -8,10 +8,12 @@ import { listBookPlaces } from "@/lib/db/places";
 import { BOOK_PLACES_TAG, bookTag } from "@/lib/db/public";
 import { createSupabaseServerClient } from "@/lib/db/server";
 import { ensureBookSettings } from "@/lib/db/settings";
+import { consumeRateLimit } from "@/lib/db/rate-limit";
 import { upsertShelfEntry } from "@/lib/db/shelf";
 import { ExternalApiError } from "@/lib/external/http";
 import { getOpenLibrary } from "@/lib/external/openlibrary.server";
 import { getWikidata } from "@/lib/external/wikidata.server";
+import { RATE_LIMITS } from "@/lib/locations/constants";
 import { upsertShelfEntrySchema } from "@/lib/validation/shelf";
 
 /** POST /api/shelf — add a book to the signed-in user's shelf, or update its entry. */
@@ -25,6 +27,13 @@ export async function POST(request: Request) {
 
   const profile = await getProfile(user.id);
   if (!profile) return apiError("profile_required", "Pick a username before adding books.");
+
+  if (!(await consumeRateLimit(await createSupabaseServerClient(), "shelf_write"))) {
+    return apiError(
+      "rate_limited",
+      `You can update your shelf up to ${RATE_LIMITS.shelf_write} times a day. Try again tomorrow.`,
+    );
+  }
 
   let book;
   try {

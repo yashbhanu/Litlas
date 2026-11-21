@@ -69,6 +69,32 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"location_votes": {
+                  Row: {
+                    "book_place_id": string,"created_at": string | null,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "book_place_id": string,"created_at"?: string | null,"user_id": string
+                  }
+                  Update: {
+                    "book_place_id"?: string,"created_at"?: string | null,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "location_votes_book_place_id_fkey"
+      columns: ["book_place_id"]
+isOneToOne: false
+      referencedRelation: "book_places"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "location_votes_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"places": {
                   Row: {
                     "country_code": string | null,"created_at": string | null,"geom": unknown,"id": string,"name": string,"osm_id": string | null,"precision": Database["public"]['Enums']["location_precision"],"wikidata_id": string | null
@@ -93,6 +119,20 @@ isOneToOne: false
                   }
                   Update: {
                     "created_at"?: string | null,"display_name"?: string | null,"id"?: string,"is_admin"?: boolean,"is_public"?: boolean,"username"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"rate_limits": {
+                  Row: {
+                    "action": string,"count": number,"day": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "action": string,"count"?: number,"day"?: string,"user_id": string
+                  }
+                  Update: {
+                    "action"?: string,"count"?: number,"day"?: string,"user_id"?: string
                   }
                   Relationships: [
                     
@@ -129,7 +169,13 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "book_place_coords":
+            "apply_location_approval":
+{ Args: { "p_book_place_id": string }; Returns: Database["public"]['Enums']["link_status"]
+                           },
+"approval_threshold":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
+"book_place_coords":
 { Args: { "p_book_ids": (string)[] }; Returns: {
               "book_id": string,"country_code": string,"lat": number,"lng": number,"name": string,"place_id": string,"precision": Database["public"]['Enums']["location_precision"],"source": Database["public"]['Enums']["location_source"]
             }[]
@@ -144,14 +190,35 @@ isOneToOne: false
               "authors": (string)[],"cover_id": number,"first_publish_year": number,"id": string,"ol_work_id": string,"title": string,"total": number
             }[]
                            },
+"consume_rate_limit":
+{ Args: { "p_action": string,"p_max": number }; Returns: boolean
+                           },
 "explore_places":
 { Args: { "max_features"?: number,"max_lat": number,"max_lng": number,"min_lat": number,"min_lng": number }; Returns: {
               "book_count": number,"country_code": string,"lat": number,"lng": number,"name": string,"place_id": string
             }[]
                            },
+"merge_places":
+{ Args: { "p_from": string,"p_into": string }; Returns: number
+                           },
+"moderation_queue":
+{ Args: { "p_limit"?: number }; Returns: {
+              "book_id": string,"book_place_id": string,"book_title": string,"country_code": string,"created_at": string,"lat": number,"lng": number,"place_id": string,"place_name": string,"precision": Database["public"]['Enums']["location_precision"],"suggested_by": string,"votes": number
+            }[]
+                           },
+"pending_suggestions":
+{ Args: { "p_book_id": string }; Returns: {
+              "book_place_id": string,"country_code": string,"created_at": string,"mine": boolean,"name": string,"place_id": string,"precision": Database["public"]['Enums']["location_precision"],"voted": boolean,"votes": number
+            }[]
+                           },
 "place_detail":
 { Args: { "p_place_id": string }; Returns: {
               "country_code": string,"id": string,"lat": number,"lng": number,"name": string,"precision": Database["public"]['Enums']["location_precision"],"wikidata_id": string
+            }[]
+                           },
+"place_duplicates":
+{ Args: { "p_limit"?: number,"p_place_id": string }; Returns: {
+              "country_code": string,"id": string,"links": number,"name": string,"precision": Database["public"]['Enums']["location_precision"],"source": string
             }[]
                            },
 "search_places":

@@ -94,23 +94,28 @@ describe("RLS: places, book_places, book_place_coords", () => {
     expect(update.error?.code).toBe("42501");
   });
 
-  it("anon sees approved links only", async () => {
+  // Phase 4 made pending suggestions public so other readers can confirm them;
+  // rejected ones stay visible only to their suggester (see tests/integration/locations.test.ts).
+  it("anon sees approved and pending links", async () => {
     const { data, error } = await anon
       .from("book_places")
       .select("place_id, status")
-      .eq("book_id", bookId);
+      .eq("book_id", bookId)
+      .order("status");
     expect(error).toBeNull();
-    expect(data).toEqual([{ place_id: approvedPlaceId, status: "approved" }]);
+    expect(data).toEqual([
+      { place_id: approvedPlaceId, status: "approved" },
+      { place_id: pendingPlaceId, status: "pending" },
+    ]);
   });
 
-  it("users also see their own pending suggestions, but not other people's", async () => {
-    const own = await alice.client.from("book_places").select("place_id").eq("book_id", bookId);
-    expect(own.data?.map((row) => row.place_id).sort()).toEqual(
+  it("other users see pending suggestions too, but maps only use approved links", async () => {
+    const other = await bob.client.from("book_places").select("place_id").eq("book_id", bookId);
+    expect(other.data?.map((row) => row.place_id).sort()).toEqual(
       [approvedPlaceId, pendingPlaceId].sort(),
     );
-
-    const other = await bob.client.from("book_places").select("place_id").eq("book_id", bookId);
-    expect(other.data).toEqual([{ place_id: approvedPlaceId }]);
+    const { data: coords } = await bob.client.rpc("book_place_coords", { p_book_ids: [bookId] });
+    expect(coords?.map((row) => row.place_id)).toEqual([approvedPlaceId]);
   });
 
   it("clients cannot insert or approve links directly", async () => {

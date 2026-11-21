@@ -5,9 +5,8 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ApiRequestError, apiFetch } from "@/lib/api-client";
+import { ApiErrorMessage } from "@/components/api-error-message";
+import { apiFetch } from "@/lib/api-client";
 import type { UpsertShelfResponse } from "@/lib/books/types";
 import {
   SHELF_STATUSES,
@@ -132,7 +131,7 @@ export function AddBookForm({
         </div>
       ) : null}
 
-      {mutation.error ? <FormError error={mutation.error} /> : null}
+      {mutation.error ? <ApiErrorMessage error={mutation.error} /> : null}
 
       <div className="flex justify-between gap-2">
         {onBack ? (
@@ -147,24 +146,5 @@ export function AddBookForm({
         </Button>
       </div>
     </form>
-  );
-}
-
-function FormError({ error }: { error: Error }) {
-  const pathname = usePathname();
-  const code = error instanceof ApiRequestError ? error.code : null;
-  return (
-    <p role="alert" className="text-sm text-destructive">
-      {error.message}{" "}
-      {code === "unauthorized" ? (
-        <Link href={`/login?next=${encodeURIComponent(pathname)}`} className="underline">
-          Sign in
-        </Link>
-      ) : code === "profile_required" ? (
-        <Link href={`/onboarding?next=${encodeURIComponent(pathname)}`} className="underline">
-          Pick a username
-        </Link>
-      ) : null}
-    </p>
   );
 }
