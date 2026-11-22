@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps<"/book/[id]">): Pro
     title: `${book.title}${by}`,
     description: where.length
       ? `Where ${book.title} is set: ${where.slice(0, 5).join(", ")}.`
-      : `${book.title}${by} on Literary World Map.`,
+      : `${book.title}${by} on Litlas.`,
   };
 }
 

@@ -14,7 +14,7 @@ export function Hero({ map }: { map?: ReactNode }) {
       />
       <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 lg:grid-cols-[1fr_1.15fr] lg:px-6 lg:py-24">
         <div className="space-y-6">
-          <p className="text-sm font-medium text-primary">Literary World Map</p>
+          <p className="text-sm font-medium text-primary">Litlas</p>
           <h1 className="text-5xl font-semibold tracking-tight text-balance lg:text-6xl">
             Read around the world.
           </h1>

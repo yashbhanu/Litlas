@@ -25,12 +25,10 @@ export default function GlobalError({
           color: "#1f2937",
         }}
       >
-        <title>Something went wrong · Literary World Map</title>
+        <title>Something went wrong · Litlas</title>
         <main style={{ maxWidth: 420, padding: 24, textAlign: "center" }}>
           <h1 style={{ fontSize: 28, marginBottom: 8 }}>Something went wrong</h1>
-          <p style={{ color: "#64748b" }}>
-            Literary World Map couldn&apos;t load. Please try again.
-          </p>
+          <p style={{ color: "#64748b" }}>Litlas couldn&apos;t load. Please try again.</p>
           {error.digest ? (
             <p style={{ fontSize: 12, color: "#64748b" }}>Error {error.digest}</p>
           ) : null}

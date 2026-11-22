@@ -181,7 +181,7 @@ test("explore loads pins for the visible area only and lists books on click", as
 test("place and book pages render on the server with titles", async ({ page, request }) => {
   // Raw HTML from the server, before any client JS.
   const placeHtml = await (await request.get(`/place/${chadPlaceId}`)).text();
-  expect(placeHtml).toContain(`<title>Books set in Chad (${tag}) · Literary World Map</title>`);
+  expect(placeHtml).toContain(`<title>Books set in Chad (${tag}) · Litlas</title>`);
   expect(placeHtml).toContain(`Chad Novel ${tag} 01`);
   expect(placeHtml).not.toContain(`Chad Novel ${tag} 21`); // page 2
 
@@ -190,9 +190,7 @@ test("place and book pages render on the server with titles", async ({ page, req
   expect(page2Html.replaceAll("<!-- -->", "")).toContain("Page 2 of 2");
 
   const bookHtml = await (await request.get(`/book/${bookIds[0]}`)).text();
-  expect(bookHtml).toContain(
-    `<title>Chad Novel ${tag} 01 by Test Author · Literary World Map</title>`,
-  );
+  expect(bookHtml).toContain(`<title>Chad Novel ${tag} 01 by Test Author · Litlas</title>`);
   expect(bookHtml).toContain(pinName);
   expect(bookHtml).toContain("Added by a moderator");
   expect(bookHtml).toContain("From Wikidata");
@@ -206,7 +204,7 @@ test("place and book pages render on the server with titles", async ({ page, req
 
   // In the browser: the book page links to its place, and signed-out readers are asked to sign in.
   await page.goto(`/book/${bookIds[0]}`);
-  await expect(page).toHaveTitle(`Chad Novel ${tag} 01 by Test Author · Literary World Map`);
+  await expect(page).toHaveTitle(`Chad Novel ${tag} 01 by Test Author · Litlas`);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(`Chad Novel ${tag} 01`);
   await page.getByRole("button", { name: `Add Chad Novel ${tag} 01 to shelf` }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Add to shelf" }).click();

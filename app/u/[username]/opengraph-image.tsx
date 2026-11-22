@@ -47,9 +47,7 @@ export default async function Image({ params }: { params: Promise<{ username: st
         padding: "40px 56px 44px",
       }}
     >
-      <div style={{ display: "flex", fontSize: 26, color: TEAL, fontWeight: 600 }}>
-        Literary World Map
-      </div>
+      <div style={{ display: "flex", fontSize: 26, color: TEAL, fontWeight: 600 }}>Litlas</div>
       <div
         style={{
           display: "flex",

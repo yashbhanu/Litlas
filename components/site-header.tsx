@@ -24,7 +24,7 @@ export function SiteHeader() {
           className="flex shrink-0 items-center gap-2 rounded-lg font-heading text-[17px] font-semibold tracking-tight outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
         >
           <GlobeIcon aria-hidden className="size-6 text-primary" strokeWidth={1.75} />
-          Literary World Map
+          Litlas
         </Link>
         {/* usePathname (active link) is request data: keep it out of the static shell. */}
         <Suspense fallback={<NavLinks className="ml-4 hidden md:flex" pathname="" />}>

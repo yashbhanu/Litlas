@@ -25,10 +25,11 @@ export const metadata: Metadata = {
   // Absolute URLs for share images and canonical links.
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
-    default: "Literary World Map",
-    template: "%s · Literary World Map",
+    default: "Litlas",
+    template: "%s · Litlas",
   },
   description: "Log the books you read and see them pinned where their stories are set.",
+  openGraph: { siteName: "Litlas" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
