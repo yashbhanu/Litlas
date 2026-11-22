@@ -4,7 +4,7 @@
  * Malta, …). Keeps only an ISO 3166-1 alpha-2 code and a name per feature and rounds
  * coordinates to 2 decimals (~1 km) to keep the file small.
  *
- * Run: node scripts/build-countries.ts
+ * Run: pnpm countries:build
  */
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -16,6 +16,7 @@ const SOURCES = [
 ];
 const OUT = join(import.meta.dirname, "..", "public", "geo", "countries.geojson");
 const BOUNDS_OUT = join(import.meta.dirname, "..", "lib", "geo", "country-bounds.json");
+const PATHS_OUT = join(import.meta.dirname, "..", "lib", "geo", "world-paths.json");
 
 type Position = [number, number];
 type Ring = Position[];
@@ -115,3 +116,28 @@ for (const [iso, { polygons }] of byCode) {
 }
 writeFileSync(BOUNDS_OUT, `${JSON.stringify(bounds)}\n`);
 console.log(`Wrote ${Object.keys(bounds).length} country bounds → ${BOUNDS_OUT}`);
+
+// Pre-projected SVG paths for server-rendered maps (share images, landing page), in the
+// equirectangular projection of lib/geo/svg-map.ts. Antarctica is left out.
+const { WORLD_SVG, projectLngLat } = await import("@/lib/geo/svg-map");
+const paths: Record<string, string> = {};
+for (const [iso, { polygons }] of byCode) {
+  if (iso === "AQ") continue;
+  const d = polygons
+    .map((rings) =>
+      rings
+        .map((ring) => {
+          const points = ring.map(([lng, lat]) =>
+            projectLngLat(lng, lat)
+              .map((n) => n.toFixed(1))
+              .join(","),
+          );
+          return `M${points.join("L")}Z`;
+        })
+        .join(""),
+    )
+    .join("");
+  paths[iso] = d;
+}
+writeFileSync(PATHS_OUT, `${JSON.stringify({ ...WORLD_SVG, paths })}\n`);
+console.log(`Wrote ${Object.keys(paths).length} SVG country paths → ${PATHS_OUT}`);

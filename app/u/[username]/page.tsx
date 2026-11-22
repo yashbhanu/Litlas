@@ -18,7 +18,15 @@ import { usernameParamSchema } from "@/lib/validation/profile";
 export async function generateMetadata({ params }: PageProps<"/u/[username]">): Promise<Metadata> {
   const { username } = await params;
   const parsed = usernameParamSchema.safeParse(username);
-  return { title: parsed.success ? `@${parsed.data}'s reading map` : "Reader not found" };
+  if (!parsed.success) return { title: "Reader not found" };
+  const title = `@${parsed.data}'s reading map`;
+  return {
+    title,
+    description: "The books this reader has read, pinned where their stories are set.",
+    // The share image comes from ./opengraph-image.tsx.
+    openGraph: { title, type: "profile" },
+    twitter: { card: "summary_large_image", title },
+  };
 }
 
 /** Public, read-only version of a reader's map and stats. */

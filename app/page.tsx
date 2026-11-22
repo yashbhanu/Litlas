@@ -1,74 +1,80 @@
-import { ArrowRightIcon, GlobeIcon, MapPinIcon, UsersIcon } from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
+import { Hero } from "@/components/landing/hero";
+import {
+  FeaturedPlaces,
+  Features,
+  SampleMap,
+  SampleMapSkeleton,
+  Totals,
+} from "@/components/landing/landing-sections";
 import { buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-const FEATURES = [
-  {
-    icon: MapPinIcon,
-    title: "Pin every book you read",
-    body: "Log a book and it lands where its story is set, from Dublin to Macondo.",
-  },
-  {
-    icon: GlobeIcon,
-    title: "Explore by place",
-    body: "Click a city or a country to find thousands of novels set there.",
-  },
-  {
-    icon: UsersIcon,
-    title: "Built with readers",
-    body: "Settings come from Wikidata and readers like you, confirmed by the community.",
-  },
-] as const;
-
+/** Landing: headline, sample explore map, featured places, sign-up CTA. */
 export default function Home() {
   return (
     <main className="flex-1">
-      <section className="relative overflow-hidden border-b bg-surface">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.9_0.05_180/0.6),transparent_60%)]"
-        />
-        <div className="relative mx-auto flex max-w-6xl flex-col gap-6 px-4 py-20 lg:px-6 lg:py-28">
-          <p className="text-sm font-medium text-primary">Literary World Map</p>
-          <h1 className="max-w-3xl text-5xl font-semibold tracking-tight text-balance lg:text-6xl">
-            Read around the world.
-          </h1>
-          <p className="max-w-2xl text-lg text-muted-foreground">
-            Log the books you read and see each one pinned at the place its story is set. Count your
-            countries and continents, and find your next book by where it takes you.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/me"
-              className={cn(buttonVariants({ size: "lg" }), "h-11 rounded-xl px-5 text-base")}
-            >
-              Start your map
-              <ArrowRightIcon aria-hidden />
-            </Link>
+      <Hero
+        map={
+          <Suspense fallback={<SampleMapSkeleton />}>
+            <SampleMap />
+          </Suspense>
+        }
+      />
+
+      <div className="mx-auto max-w-6xl space-y-16 px-4 py-14 lg:px-6">
+        <Suspense fallback={<Skeleton className="h-24 rounded-2xl" />}>
+          <Totals />
+        </Suspense>
+
+        <section aria-labelledby="featured-heading" className="space-y-4">
+          <div className="flex items-end justify-between gap-2">
+            <h2 id="featured-heading" className="text-2xl font-semibold tracking-tight">
+              Where readers travel most
+            </h2>
             <Link
               href="/explore"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "lg" }),
-                "h-11 rounded-xl bg-background px-5 text-base",
-              )}
+              className="text-sm font-medium text-primary underline underline-offset-4 hover:no-underline"
             >
-              Explore the map
+              Explore all
             </Link>
           </div>
-        </div>
-      </section>
-      <section className="mx-auto grid max-w-6xl gap-4 px-4 py-14 sm:grid-cols-3 lg:px-6">
-        {FEATURES.map(({ icon: Icon, title, body }) => (
-          <div key={title} className="rounded-2xl border p-5">
-            <span className="flex size-10 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
-              <Icon aria-hidden className="size-5" />
-            </span>
-            <h2 className="mt-4 text-lg font-semibold">{title}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{body}</p>
+          <Suspense fallback={<Skeleton className="h-40 rounded-2xl" />}>
+            <FeaturedPlaces />
+          </Suspense>
+        </section>
+
+        <section aria-labelledby="how-heading" className="space-y-4">
+          <h2 id="how-heading" className="text-2xl font-semibold tracking-tight">
+            How it works
+          </h2>
+          <Features />
+        </section>
+
+        <section className="flex flex-col items-start justify-between gap-4 rounded-3xl bg-primary px-6 py-8 text-primary-foreground sm:flex-row sm:items-center lg:px-10">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Where will your next book take you?
+            </h2>
+            <p className="mt-1 opacity-90">
+              Free, no ads. Sign in with your email and start pinning.
+            </p>
           </div>
-        ))}
-      </section>
+          <Link
+            href="/login?next=/me"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "h-11 shrink-0 rounded-xl border-transparent bg-background px-5 text-base text-foreground",
+            )}
+          >
+            Start your map
+            <ArrowRightIcon aria-hidden />
+          </Link>
+        </section>
+      </div>
     </main>
   );
 }

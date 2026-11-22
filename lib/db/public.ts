@@ -18,6 +18,7 @@ import type { Bbox } from "@/lib/geo/bbox";
 import { countryName } from "@/lib/geo/continents";
 import type { Database } from "./database.types";
 import { fetchAllPages } from "./paging";
+import { findProfileByUsername, loadShelfMap } from "./map";
 import { listBookPlaces } from "./places";
 
 /**
@@ -244,4 +245,109 @@ export async function searchBooks(query: string): Promise<BookSummary[]> {
     firstPublishYear: row.first_publish_year,
     coverId: row.cover_id,
   }));
+}
+
+export const readerTag = (username: string) => `reader:${username}`;
+
+export interface PublicReadingMap {
+  username: string;
+  displayName: string | null;
+  stats: { booksRead: number; countries: number; continents: number };
+  countries: string[];
+  /** Distinct pin coordinates [lng, lat]. */
+  pins: [number, number][];
+}
+
+/**
+ * A reader's map as a signed-out visitor sees it (share images). Null if there's no such
+ * reader or their profile is private.
+ */
+export async function loadPublicReadingMap(username: string): Promise<PublicReadingMap | null> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(readerTag(username), BOOK_PLACES_TAG);
+  const supabase = anonClient();
+  const profile = await findProfileByUsername(supabase, username);
+  if (!profile || !profile.isPublic) return null;
+  const { map } = await loadShelfMap(supabase, profile.id);
+  const pins = new Map<string, [number, number]>();
+  for (const feature of map.pins.features) {
+    const [lng, lat] = feature.geometry.coordinates;
+    pins.set(`${lng.toFixed(2)},${lat.toFixed(2)}`, [lng, lat]);
+  }
+  return {
+    username: profile.username,
+    displayName: profile.displayName,
+    stats: {
+      booksRead: map.stats.booksRead,
+      countries: map.stats.countries,
+      continents: map.stats.continents,
+    },
+    countries: map.countries,
+    pins: [...pins.values()],
+  };
+}
+
+/** Ids for the sitemap: every book, places with approved books, countries with books. */
+export async function listSitemapIds(): Promise<{
+  books: { id: string; createdAt: string | null }[];
+  places: string[];
+  countries: string[];
+}> {
+  "use cache";
+  cacheLife("days");
+  cacheTag(BOOK_PLACES_TAG);
+  const supabase = anonClient();
+  const [books, places] = await Promise.all([
+    fetchAllPages((from, to) =>
+      supabase.from("books").select("id, created_at").order("id").range(from, to),
+    ),
+    fetchAllPages((from, to) =>
+      supabase
+        .from("places")
+        .select("id, country_code, book_places!inner(status)")
+        .eq("book_places.status", "approved")
+        .neq("precision", "fictional")
+        .order("id")
+        .range(from, to),
+    ),
+  ]);
+  return {
+    books: books.map((b) => ({ id: b.id, createdAt: b.created_at })),
+    places: [...new Set(places.map((p) => p.id))],
+    countries: [...new Set(places.flatMap((p) => (p.country_code ? [p.country_code] : [])))].sort(),
+  };
+}
+
+export interface LandingData {
+  totals: { books: number; places: number; countries: number };
+  /** Most-read places, at most one per country. */
+  featured: { placeId: string; name: string; countryCode: string | null; bookCount: number }[];
+  /** Pins for the sample map: the most-read places worldwide. */
+  pins: [number, number][];
+  /** Countries with the most-read places, shaded on the sample map. */
+  countries: string[];
+}
+
+/** Numbers, featured places and a sample map for the landing page. */
+export async function getLandingData(): Promise<LandingData> {
+  "use cache";
+  cacheLife("days");
+  cacheTag(BOOK_PLACES_TAG);
+  const [ids, world] = await Promise.all([listSitemapIds(), explorePlaces([[-180, -85, 180, 85]])]);
+  const featured: LandingData["featured"] = [];
+  const seen = new Set<string>();
+  for (const { properties } of world.features) {
+    const country = properties.countryCode ?? properties.placeId;
+    if (seen.has(country)) continue;
+    seen.add(country);
+    featured.push(properties);
+    if (featured.length === 6) break;
+  }
+  return {
+    totals: { books: ids.books.length, places: ids.places.length, countries: ids.countries.length },
+    featured,
+    pins: world.features.slice(0, 350).map((f) => f.geometry.coordinates),
+    countries: featured.flatMap((f) => (f.countryCode ? [f.countryCode] : [])),
+  };
 }

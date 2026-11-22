@@ -5,7 +5,7 @@ import type { UpsertShelfResponse } from "@/lib/books/types";
 import { createSupabaseAdminClient } from "@/lib/db/admin";
 import { findBookById, findOrCreateBook } from "@/lib/db/books";
 import { listBookPlaces } from "@/lib/db/places";
-import { BOOK_PLACES_TAG, bookTag } from "@/lib/db/public";
+import { BOOK_PLACES_TAG, bookTag, readerTag } from "@/lib/db/public";
 import { createSupabaseServerClient } from "@/lib/db/server";
 import { ensureBookSettings } from "@/lib/db/settings";
 import { consumeRateLimit } from "@/lib/db/rate-limit";
@@ -92,6 +92,9 @@ export async function POST(request: Request) {
     console.error(error);
     settingLookupFailed = true;
   }
+
+  // The reader's share image shows their map.
+  revalidateTag(readerTag(profile.username), "max");
 
   const places = await listBookPlaces(supabase, [book.id]);
   return Response.json({

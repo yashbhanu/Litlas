@@ -55,3 +55,23 @@ export const usernameParamSchema = z
   .trim()
   .toLowerCase()
   .regex(/^[a-z0-9_]{3,20}$/, "Not a valid username");
+
+/** Body of PATCH /api/me/profile: any of username, display name, visibility. */
+export const updateProfileSchema = z
+  .object({
+    username: usernameSchema.optional(),
+    displayName: z
+      .string()
+      .trim()
+      .max(50, "Display name is at most 50 characters")
+      .transform((value) => value || null)
+      .nullish(),
+    isPublic: z.boolean().optional(),
+  })
+  .refine((input) => Object.values(input).some((value) => value !== undefined), {
+    message: "Nothing to update",
+  });
+export type UpdateProfileInput = z.input<typeof updateProfileSchema>;
+
+/** Body of DELETE /api/me: retype your username to confirm. */
+export const deleteAccountSchema = z.object({ confirmUsername: z.string().trim().toLowerCase() });

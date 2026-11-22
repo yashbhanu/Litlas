@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOutIcon, MapPinIcon, ShieldCheckIcon, UserIcon } from "lucide-react";
+import { LogOutIcon, MapPinIcon, SettingsIcon, ShieldCheckIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -56,6 +56,10 @@ export function UserMenu({
           <DropdownMenuItem render={<Link href={`/u/${username}`} />}>
             <UserIcon aria-hidden />
             Public profile
+          </DropdownMenuItem>
+          <DropdownMenuItem render={<Link href="/settings" />}>
+            <SettingsIcon aria-hidden />
+            Settings
           </DropdownMenuItem>
           {isAdmin ? (
             <DropdownMenuItem render={<Link href="/moderate" />}>

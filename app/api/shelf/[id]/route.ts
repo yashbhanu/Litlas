@@ -1,6 +1,8 @@
 import type { NextRequest } from "next/server";
 import { apiError, validationError } from "@/lib/api";
-import { getSessionUser } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
+import { getProfile, getSessionUser } from "@/lib/auth";
+import { readerTag } from "@/lib/db/public";
 import { createSupabaseServerClient } from "@/lib/db/server";
 import { deleteShelfEntry } from "@/lib/db/shelf";
 import { shelfEntryIdSchema } from "@/lib/validation/shelf";
@@ -18,5 +20,7 @@ export async function DELETE(_request: NextRequest, ctx: RouteContext<"/api/shel
   const deleted = await deleteShelfEntry(supabase, parsed.data);
   if (!deleted) return apiError("not_found", "Shelf entry not found.");
 
+  const profile = await getProfile(user.id);
+  if (profile) revalidateTag(readerTag(profile.username), "max");
   return new Response(null, { status: 204 });
 }

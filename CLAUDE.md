@@ -144,6 +144,14 @@ data/seed/            raw Wikidata dumps from the seed script (Phase 3)
     - `/explore` uses `MapLayout`: a side panel, or a bottom sheet on phones.
     - `/me` and `/u/[username]` use `ReadingMapLayout`: stacked cards on phones, map plus panel on desktop.
   - Client components that call `usePathname` / `useSearchParams` must render inside `<Suspense>`, with a fallback that doesn't call the hook (`NavLinks`, `TabLinks`).
+- Launch pieces (Phase 5):
+  - **Share images:** `app/u/[username]/opengraph-image.tsx` draws the reader's map with `components/og/world-map-svg.tsx`.
+    - The SVG paths are pre-projected into `lib/geo/world-paths.json` by `pnpm countries:build`, using the projection in `lib/geo/svg-map.ts`.
+    - The data is cached per reader (tag `reader:<username>`), revalidated on shelf and profile changes.
+  - **Sitemap:** `app/sitemap.ts` (books, places, countries; regenerated daily), plus `app/robots.ts`.
+  - **Pages:** `/settings` (profile, privacy, account deletion via `DELETE /api/me`), `app/error.tsx`, `app/global-error.tsx`, `app/not-found.tsx`.
+  - **Landing page:** `components/landing/*`, built from cached `getLandingData()`.
+  - **Analytics:** `<Analytics />` from `@vercel/analytics`.
 - Use `components/books/book-cover.tsx` for covers (`next/image`, `unoptimized` to stay inside the Vercel Hobby image quota, with a placeholder when missing).
 - Client components talk to our API with TanStack Query + `apiFetch`. After a mutation that changes server-rendered data, call `router.refresh()`.
 

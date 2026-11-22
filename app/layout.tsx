@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { Providers } from "@/components/providers";
@@ -21,6 +22,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // Absolute URLs for share images and canonical links.
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
     default: "Literary World Map",
     template: "%s · Literary World Map",
@@ -41,6 +44,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <div className="flex flex-1 flex-col">{children}</div>
           <SiteFooter />
           <SiteTabBar />
+          {/* Vercel Web Analytics (free tier, cookie-less). No-op outside Vercel. */}
+          <Analytics />
         </Providers>
       </body>
     </html>
