@@ -126,6 +126,7 @@ data/seed/            raw Wikidata dumps from the seed script (Phase 3)
 - Serialize Wikidata calls and retry with exponential backoff on 429/5xx. Debounce Photon by 300 ms with a 3-character minimum, proxied through our API.
 - External clients are wrapped so tests can mock them. Unit tests use recorded fixtures, never live calls.
 - DB changes go **only through migrations** in `supabase/migrations/`. Run `pnpm db:types` after each one.
+- **Grant table privileges explicitly** in the migration that creates a table (`anon`, `authenticated`, `service_role`, and execute on functions revoked from public). Hosted Supabase no longer grants them by default, although the local CLI still does, so a missing grant only fails in production (see `20261125000000_explicit_grants.sql`).
 - PostGIS lives in the `extensions` schema (Supabase convention).
 - `profiles` uses column-level grants: clients may select only `id, username, display_name, is_public, created_at` and can never read or write `is_admin`. **Always select explicit columns from `profiles`, because `select('*')` is denied.** Admin checks use the service-role client.
 - Use the user client (`createSupabaseServerClient`) for user data so RLS applies. The service-role client (`createSupabaseAdminClient`) is only for server-owned writes (books, places, admin actions).
